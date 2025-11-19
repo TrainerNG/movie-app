@@ -1,0 +1,26 @@
+<div class="movie-list-container">
+    <h1>Movie Listing</h1>
+    <div class="search-container">
+        <input type="text" [(ngModel)]="query" (keyup.enter)="search()" placeholder="Search for movies..."
+        class="search-input">
+
+        <button (click)="search()" class="search-btn">Search</button>
+    </div>
+    <div *ngIf="loading" class="loading">loading...</div>
+
+    <!-- MOVIE GRID -->
+     <app-movie-card 
+     [movies]="movies"
+     (movieSelected)="viewDetails($event)"
+     *ngIf="!loading && movies.length > 0">
+     </app-movie-card>
+
+    <div *ngIf="!error && !loading && movies.length === 0" class="no-results">No movies found</div>
+    <div *ngIf="error && !loading && movies.length === 0" class="no-results">API ERROR</div>
+
+    <div class="pagination" *ngIf="totalPages > 1">
+        <button (click)="onPageChange(currentPage - 1)" class="page-btn" [disabled]="currentPage === 1">Previous</button>
+        <span> Page {{currentPage}} of {{totalPages}}</span>
+        <button (click)="onPageChange(currentPage + 1)" class="page-btn" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+</div>
