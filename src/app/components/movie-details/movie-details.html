@@ -1,0 +1,30 @@
+<div class="movie-details-container" *ngIf="movieDetails">
+    <button (click)="goBack()" class="back-btn">← Back to List</button>
+
+    <div class="movie-header">
+    <img [src]="movieDetails.poster_path ? 'https://image.tmdb.org/t/p/w500' + movieDetails.poster_path 
+    : 'https://via.placeholder.com/300x400?text=No+Image'" [alt]="movieDetails.title" class="movie-poster-large"/>
+
+    <div class="movie-info">
+        <h1>{{movieDetails.title}}</h1>
+        <p><strong>Release Date : </strong>{{(movieDetails.release_date | date) ?? 'N/A'}}</p>
+        <p><strong>Runtime : </strong>{{movieDetails.runtime || 'N/A'}} min</p>
+        <p><strong>Vote Average : </strong>{{movieDetails.vote_average}}</p>
+        <p><strong>Vote Count : </strong>{{movieDetails.vote_count}}</p>
+        <p><strong>Popularity : </strong>{{movieDetails.popularity}}</p>
+
+        <!-- NULL COELSION OPERATOR -->
+
+        <p><strong>Revenue : </strong>{{movieDetails.revenue}}</p>
+    </div>
+    </div>
+
+    <!-- OVERVIEW BLOCK -->
+
+    <div class="movie-plot">
+        <h2>Overview</h2>
+        <p>{{movieDetails.overview}}</p>
+    </div>
+</div>
+
+<div class="loading" *ngIf="loading">Loading movie details...</div>

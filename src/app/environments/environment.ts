@@ -1,0 +1,5 @@
+export const environment = {
+production:false,
+encryptionKey:'qwertyuiop45678kiloujmolpkmjhn23',
+apiKey : 'eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJmNjYxNTlkYTEwM2MzYWU2OGJiNTNhNzQ0OGZlOTQ4ZiIsIm5iZiI6MTc2MTkyMTIzOC41LCJzdWIiOiI2OTA0YzhkNjI3Zjg1NTQ3MTU1OTc3ZDkiLCJzY29wZXMiOlsiYXBpX3JlYWQiXSwidmVyc2lvbiI6MX0.an7YjrPuBLuTkshlpFMQ_uV_oTizAH40U4oYWKQKMMQ'
+}

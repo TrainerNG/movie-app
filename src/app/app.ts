@@ -1,5 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { MovieList } from "./components/movie-list/movie-list";
 
 @Component({
   selector: 'app-root',
