@@ -4,14 +4,14 @@ import { MovieSearchResponse } from '../../interfaces/movie-search-response';
 import { FormsModule } from '@angular/forms';
 import { MovieInterface } from '../../interfaces/movie';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { EncryptionService } from '../../services/encryption-service';
 import { ToastService } from '../../services/toast-service';
 import { MovieCard } from "../movie-card/movie-card";
 
 @Component({
   selector: 'app-movie-list',
-  imports: [FormsModule, CommonModule, MovieCard],
+  imports: [FormsModule, CommonModule, MovieCard, RouterLink],
   templateUrl: './movie-list.html',
   styleUrl: './movie-list.css',
 })

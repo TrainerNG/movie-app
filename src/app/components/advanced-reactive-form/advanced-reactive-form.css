@@ -66,6 +66,23 @@ label {
   margin-bottom: 0.75rem;
 }
 
+.required-indicator {
+  color: #fbbf24;
+  margin-left: 0.25rem;
+  font-weight: 600;
+}
+
+.label-heading {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.required-note {
+  font-size: 0.75rem;
+  color: #fcd34d;
+}
+
 input,
 select,
 textarea {

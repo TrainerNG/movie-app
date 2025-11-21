@@ -60,6 +60,12 @@ label {
   font-weight: 500;
 }
 
+.required-indicator {
+  color: #fbbf24;
+  margin-left: 0.25rem;
+  font-weight: 600;
+}
+
 input,
 select,
 textarea {

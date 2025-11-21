@@ -1,9 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
   FormBuilder,
+  FormControlStatus,
   FormGroup,
   ReactiveFormsModule,
   ValidationErrors,
@@ -34,41 +35,44 @@ export class AdvancedReactiveForm {
   readonly categories = signal(['Conference', 'Workshop', 'Meetup', 'Watch Party']);
   readonly summary = signal({ totalCapacity: 0, potentialRevenue: 0 });
   readonly lastSavedAt = signal<string | null>(null);
+  readonly contactPreference = signal<'email' | 'phone'>('email');
 
   protected submittedPayload: unknown = null;
 
-  readonly eventPlannerForm = this.fb.group(
-    {
-      eventInfo: this.fb.group(
-        {
-          title: ['', [Validators.required, Validators.minLength(4)]],
-          description: ['', [Validators.required, Validators.minLength(10)]],
-          category: ['', Validators.required],
-          startDate: ['', Validators.required],
-          endDate: ['', Validators.required],
-          isVirtual: [false],
-          meetingUrl: [''],
-        },
-        { validators: this.dateOrderValidator('startDate', 'endDate') }
-      ),
-      organizer: this.fb.group({
-        fullName: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]],
-        phone: [''],
-        contactPreference: ['email', Validators.required],
-      }),
-      tickets: this.fb.array([this.createTicketRow()]),
-      agreement: [false, Validators.requiredTrue],
-    },
-    { updateOn: 'blur' }
-  );
+  readonly eventPlannerForm = this.fb.group({
+    eventInfo: this.fb.group(
+      {
+        title: ['', [Validators.required, Validators.minLength(4)]],
+        description: ['', [Validators.required, Validators.maxLength(500)]],
+        category: ['', Validators.required],
+        startDate: ['', Validators.required],
+        endDate: ['', Validators.required],
+        isVirtual: [false],
+        meetingUrl: [''],
+      },
+      { validators: this.dateOrderValidator('startDate', 'endDate') }
+    ),
+    organizer: this.fb.group({
+      fullName: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      phone: [''],
+      contactPreference: ['email', Validators.required],
+    }),
+    tickets: this.fb.array([this.createTicketRow()]),
+    agreement: [false, Validators.requiredTrue],
+  });
 
-  readonly formStatus = computed(() => this.eventPlannerForm.status);
+  readonly formStatus = signal<FormControlStatus>(this.eventPlannerForm.status);
 
   constructor() {
     this.handleVirtualToggle();
     this.handleContactPreference();
     this.bootstrapRealtimeSummary();
+    this.updateSummary();
+
+    this.eventPlannerForm.statusChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((status) => this.formStatus.set(status));
   }
 
   get tickets(): FormArray<FormGroup> {
@@ -85,15 +89,19 @@ export class AdvancedReactiveForm {
     }
     this.tickets.removeAt(index);
     this.updateSummary();
-  }
+  } 
 
   onSubmit(): void {
+    console.log(this.eventPlannerForm);
+    
     if (this.eventPlannerForm.invalid) {
       this.eventPlannerForm.markAllAsTouched();
       return;
     }
 
     this.submittedPayload = this.eventPlannerForm.getRawValue();
+    console.log(this.submittedPayload);
+    
   }
 
   resetForm(): void {
@@ -133,7 +141,7 @@ export class AdvancedReactiveForm {
           meetingUrlControl.clearValidators();
           meetingUrlControl.setValue('', { emitEvent: false });
         }
-        meetingUrlControl.updateValueAndValidity({ emitEvent: false });
+        meetingUrlControl.updateValueAndValidity();
       });
   }
 
@@ -141,22 +149,25 @@ export class AdvancedReactiveForm {
     const contactControl = this.eventPlannerForm.get('organizer.contactPreference');
     const phoneControl = this.eventPlannerForm.get('organizer.phone');
 
-    contactControl?.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe((preference: string | null) => {
-        if (!phoneControl) {
-          return;
-        }
-        if ((preference ?? 'email') === 'phone') {
-          phoneControl.addValidators([
-            Validators.required,
-            Validators.pattern(/^\+?[0-9]{10,15}$/),
-          ]);
-        } else {
-          phoneControl.clearValidators();
-        }
-        phoneControl.updateValueAndValidity({ emitEvent: false });
-      });
+    const applyPreferenceRules = (preference: string | null): void => {
+      const nextPreference = ((preference ?? 'email') as 'email' | 'phone');
+      this.contactPreference.set(nextPreference);
+
+      if (!phoneControl) {
+        return;
+      }
+
+      if (nextPreference === 'phone') {
+        phoneControl.addValidators([Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)]);
+      } else {
+        phoneControl.clearValidators();
+      }
+      phoneControl.updateValueAndValidity();
+    };
+
+    applyPreferenceRules(contactControl?.value ?? 'email');
+
+    contactControl?.valueChanges.pipe(takeUntilDestroyed()).subscribe(applyPreferenceRules);
   }
 
   private bootstrapRealtimeSummary(): void {
@@ -184,6 +195,7 @@ export class AdvancedReactiveForm {
     );
 
     this.summary.set(aggregate);
+    this.formStatus.set(this.eventPlannerForm.status);
   }
 
   private dateOrderValidator(startKey: string, endKey: string): ValidatorFn {
