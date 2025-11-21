@@ -1,0 +1,174 @@
+<section class="shell" [formGroup]="eventPlannerForm" (ngSubmit)="onSubmit()" novalidate>
+  <header class="shell__header">
+    <div>
+      <p class="eyebrow">Training demo</p>
+      <h1>Realtime Event Planner Form</h1>
+      <p class="subtitle">
+        Demonstrates nested groups, dynamic form arrays, conditional validation, computed summaries and
+        live preview for Angular 20 reactive forms.
+      </p>
+    </div>
+    <div class="header__meta">
+      <div class="badge" [class.badge--valid]="formStatus() === 'VALID'">Status: {{ formStatus() }}</div>
+      <div *ngIf="lastSavedAt()" class="saved-at">Auto-saved at {{ lastSavedAt() }}</div>
+      <button type="button" class="btn btn--ghost" (click)="resetForm()">Reset</button>
+    </div>
+  </header>
+
+  <div class="shell__grid">
+    <div class="panel" formGroupName="eventInfo">
+      <h2>Event information</h2>
+      <label>
+        Title
+        <input type="text" formControlName="title" />
+      </label>
+      <small class="error" *ngIf="hasError('eventInfo.title', 'required')">Title is required.</small>
+      <small class="error" *ngIf="hasError('eventInfo.title', 'minlength')">
+        Minimum 4 characters are required.
+      </small>
+
+      <label>
+        Description
+        <textarea rows="3" formControlName="description"></textarea>
+      </label>
+      <small class="error" *ngIf="hasError('eventInfo.description', 'required')">
+        Description is required.
+      </small>
+
+      <label>
+        Category
+        <select formControlName="category">
+          <option value="" disabled>Select category</option>
+          <option *ngFor="let category of categories()" [value]="category">{{ category }}</option>
+        </select>
+      </label>
+      <small class="error" *ngIf="hasError('eventInfo.category', 'required')">Pick a category.</small>
+
+      <div class="grid-2">
+        <label>
+          Starts on
+          <input type="date" formControlName="startDate" />
+        </label>
+        <label>
+          Ends on
+          <input type="date" formControlName="endDate" />
+        </label>
+      </div>
+      <small class="error" *ngIf="hasError('eventInfo', 'dateOrder')">End date must be after start.</small>
+
+      <label class="toggle">
+        <input type="checkbox" formControlName="isVirtual" />
+        Host virtually
+      </label>
+
+      <label *ngIf="eventPlannerForm.get('eventInfo.isVirtual')?.value">
+        Meeting URL
+        <input type="url" formControlName="meetingUrl" placeholder="https://" />
+      </label>
+      <small class="error" *ngIf="hasError('eventInfo.meetingUrl', 'required')">URL is required.</small>
+      <small class="error" *ngIf="hasError('eventInfo.meetingUrl', 'pattern')">Include http(s)://</small>
+    </div>
+
+    <div class="panel" formGroupName="organizer">
+      <h2>Organizer</h2>
+      <label>
+        Full name
+        <input type="text" formControlName="fullName" />
+      </label>
+      <small class="error" *ngIf="hasError('organizer.fullName', 'required')">Name is mandatory.</small>
+
+      <label>
+        Email
+        <input type="email" formControlName="email" />
+      </label>
+      <small class="error" *ngIf="hasError('organizer.email', 'required')">Email is required.</small>
+      <small class="error" *ngIf="hasError('organizer.email', 'email')">Provide a valid email.</small>
+
+      <label>
+        Phone
+        <input type="tel" formControlName="phone" />
+      </label>
+      <small class="error" *ngIf="hasError('organizer.phone', 'required')">Phone required for calls.</small>
+      <small class="error" *ngIf="hasError('organizer.phone', 'pattern')">Use country code and digits.</small>
+
+      <label>
+        Preferred contact channel
+        <select formControlName="contactPreference">
+          <option value="email">Email</option>
+          <option value="phone">Phone</option>
+        </select>
+      </label>
+    </div>
+  </div>
+
+  <div class="panel" formArrayName="tickets">
+    <header class="panel__header">
+      <div>
+        <h2>Ticket tiers</h2>
+        <p>Dynamic FormArray with inline validation & derived calculations.</p>
+      </div>
+      <button type="button" class="btn" (click)="addTicket()">Add tier</button>
+    </header>
+
+    <div class="tickets" *ngFor="let ticketGroup of tickets.controls; let i = index; trackBy: trackTicket" [formGroupName]="i">
+      <div class="tickets__row">
+        <label>
+          Label
+          <input type="text" formControlName="label" />
+        </label>
+        <label>
+          Capacity
+          <input type="number" formControlName="capacity" min="1" />
+        </label>
+        <label>
+          Price ($)
+          <input type="number" formControlName="price" min="0" step="1" />
+        </label>
+        <label>
+          Available from
+          <input type="date" formControlName="availableFrom" />
+        </label>
+        <label>
+          Until
+          <input type="date" formControlName="availableTo" />
+        </label>
+        <button type="button" class="btn btn--ghost" (click)="removeTicket(i)" [disabled]="tickets.length === 1">
+          Remove
+        </button>
+      </div>
+      <small class="error" *ngIf="ticketGroup.hasError('dateOrder')">Until must be after start.</small>
+    </div>
+  </div>
+
+  <div class="panel panel--summary">
+    <h2>Realtime summary</h2>
+    <div class="summary">
+      <div>
+        <p class="eyebrow">Capacity</p>
+        <h3>{{ summary().totalCapacity }}</h3>
+      </div>
+      <div>
+        <p class="eyebrow">Potential revenue</p>
+        <h3>${{ summary().potentialRevenue | number: '1.0-0' }}</h3>
+      </div>
+    </div>
+    <label class="consent">
+      <input type="checkbox" formControlName="agreement" />
+      I confirm all details are correct.
+    </label>
+    <small class="error" *ngIf="hasError('agreement', 'required')">Consent is required.</small>
+    <div class="actions">
+      <button class="btn" type="submit">Submit form</button>
+    </div>
+  </div>
+
+  <div class="panel panel--preview">
+    <h2>Live payload preview</h2>
+    <pre>{{ eventPlannerForm.getRawValue() | json }}</pre>
+  </div>
+
+  <div class="panel panel--preview" *ngIf="submittedPayload">
+    <h2>Last submitted payload</h2>
+    <pre>{{ submittedPayload | json }}</pre>
+  </div>
+</section>

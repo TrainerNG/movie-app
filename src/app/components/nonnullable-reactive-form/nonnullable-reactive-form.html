@@ -1,0 +1,217 @@
+<section class="program-shell" [formGroup]="programForm" (ngSubmit)="submitProgram()">
+  <header class="program-shell__header">
+    <div>
+      <p class="eyebrow">Advanced reactive form · NonNullable</p>
+      <h1>Engineering Program Planner</h1>
+      <p class="subtitle">
+        Demonstrates nested groups, dynamic FormArrays, NonNullable controls, realtime insights, and reset
+        workflows tailored for Angular 20 standalone setups.
+      </p>
+    </div>
+    <div class="header-actions">
+      <div class="badge">Readiness {{ readinessScore() }}%</div>
+      <button class="btn btn--ghost" type="button" (click)="resetProgram()">Reset</button>
+      <button class="btn" type="submit">Submit blueprint</button>
+    </div>
+  </header>
+
+  <div class="grid">
+    <article class="panel" formGroupName="programInfo">
+      <h2>Program details</h2>
+      <label>
+        Name
+        <input formControlName="name" type="text" />
+      </label>
+      <small class="error" *ngIf="hasError('programInfo.name', 'minlength')">At least 3 characters.</small>
+
+      <label>
+        Code
+        <input formControlName="code" type="text" placeholder="AA-0000" />
+      </label>
+      <small class="error" *ngIf="hasError('programInfo.code', 'pattern')">Format AA-0000.</small>
+
+      <label>
+        Program type
+        <select formControlName="type">
+          <option *ngFor="let type of programTypes" [value]="type">{{ type | titlecase }}</option>
+        </select>
+      </label>
+      <small class="hint">{{ budgetHint() }}</small>
+
+      <label>
+        Budget
+        <input formControlName="budget" type="number" min="1000" />
+      </label>
+      <small class="error" *ngIf="hasError('programInfo.budget', 'min')">Budget below threshold.</small>
+
+      <label>
+        Strategic importance
+        <select formControlName="strategicImportance">
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </label>
+    </article>
+
+    <article class="panel" formGroupName="primaryContact">
+      <h2>Primary contact</h2>
+      <label>
+        Full name
+        <input formControlName="fullName" type="text" />
+      </label>
+      <small class="error" *ngIf="hasError('primaryContact.fullName', 'required')">Required.</small>
+
+      <label>
+        Email
+        <input formControlName="email" type="email" />
+      </label>
+      <small class="error" *ngIf="hasError('primaryContact.email', 'email')">Invalid email.</small>
+
+      <label>
+        Timezone
+        <input formControlName="timezone" type="text" />
+      </label>
+
+      <label>
+        Slack handle
+        <input formControlName="slackHandle" type="text" placeholder="@username" />
+      </label>
+    </article>
+  </div>
+
+  <article class="panel" formArrayName="members">
+    <header class="panel__header">
+      <div>
+        <h2>Program members</h2>
+        <p class="subtitle">Nested FormArray with inner skill arrays.</p>
+      </div>
+      <button class="btn" type="button" (click)="addMember()">Add member</button>
+    </header>
+
+    <div class="member-card" *ngFor="let memberGroup of members.controls; let i = index; trackBy: trackMember" [formGroupName]="i">
+      <div class="member-grid">
+        <label>
+          Name
+          <input formControlName="name" type="text" />
+        </label>
+        <label>
+          Role
+          <select formControlName="role">
+            <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
+          </select>
+        </label>
+        <label>
+          Availability (hrs)
+          <input formControlName="availability" type="number" min="10" max="120" />
+        </label>
+        <button type="button" class="btn btn--ghost" (click)="removeMember(i)" [disabled]="members.length === 1">
+          Remove
+        </button>
+      </div>
+
+      <div class="skill-set" formArrayName="skillSet">
+        <p class="eyebrow">Skill set</p>
+        <div class="skills" *ngFor="let skill of memberGroup.controls.skillSet.controls; let j = index; trackBy: trackSkill">
+          <input [formControlName]="j" type="text" />
+          <button type="button" class="btn btn--ghost" (click)="removeSkill(i, j)" [disabled]="memberGroup.controls.skillSet.length === 1">
+            ✕
+          </button>
+        </div>
+        <button type="button" class="btn btn--ghost" (click)="addSkill(i)">+ Skill</button>
+      </div>
+    </div>
+
+    <div class="insights">
+      <div>
+        <p class="eyebrow">Avg availability</p>
+        <h3>{{ memberInsights().avgAvailability }} hrs</h3>
+      </div>
+      <div>
+        <p class="eyebrow">Overallocated</p>
+        <h3>{{ memberInsights().overallocated }}</h3>
+      </div>
+      <div>
+        <p class="eyebrow">Total skills</p>
+        <h3>{{ memberInsights().totalSkills }}</h3>
+      </div>
+    </div>
+  </article>
+
+  <article class="panel" formArrayName="sprints">
+    <header class="panel__header">
+      <div>
+        <h2>Sprint plan</h2>
+        <p class="subtitle">FormArray with nested timeline validation references.</p>
+      </div>
+      <button class="btn" type="button" (click)="addSprint()">Add sprint</button>
+    </header>
+
+    <div class="sprint-card" *ngFor="let sprint of sprints.controls; let s = index; trackBy: trackSprint" [formGroupName]="s">
+      <div class="member-grid">
+        <label>
+          Title
+          <input formControlName="title" type="text" />
+        </label>
+        <label>
+          Goal
+          <input formControlName="goal" type="text" />
+        </label>
+        <label>
+          Capacity
+          <input formControlName="capacity" type="number" min="40" />
+        </label>
+        <button type="button" class="btn btn--ghost" (click)="removeSprint(s)" [disabled]="sprints.length === 1">
+          Remove
+        </button>
+      </div>
+      <div class="member-grid">
+        <label>
+          Starts
+          <input formControlName="startDate" type="date" />
+        </label>
+        <label>
+          Ends
+          <input formControlName="endDate" type="date" />
+        </label>
+      </div>
+    </div>
+
+    <div class="insights">
+      <div>
+        <p class="eyebrow">Total capacity</p>
+        <h3>{{ sprintInsights().totalCapacity }} hrs</h3>
+      </div>
+      <div>
+        <p class="eyebrow">Timeline warnings</p>
+        <h3>{{ sprintInsights().timelineWarnings }}</h3>
+      </div>
+    </div>
+  </article>
+
+  <article class="panel" formGroupName="readinessChecklist">
+    <h2>Readiness checklist</h2>
+    <label class="checkbox">
+      <input formControlName="scopeDefined" type="checkbox" /> Scope defined
+    </label>
+    <label class="checkbox">
+      <input formControlName="stakeholdersAligned" type="checkbox" /> Stakeholders aligned
+    </label>
+    <label class="checkbox">
+      <input formControlName="toolingReady" type="checkbox" /> Tooling ready
+    </label>
+    <label class="checkbox">
+      <input formControlName="risksLogged" type="checkbox" /> Risks logged
+    </label>
+  </article>
+
+  <article class="panel panel--preview">
+    <h2>Live form value</h2>
+    <pre>{{ programForm.getRawValue() | json }}</pre>
+  </article>
+
+  <article class="panel panel--preview" *ngIf="submittedSnapshot()">
+    <h2>Last submitted payload</h2>
+    <pre>{{ submittedSnapshot() | json }}</pre>
+  </article>
+</section>
