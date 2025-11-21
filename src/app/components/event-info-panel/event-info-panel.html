@@ -1,0 +1,69 @@
+<div class="panel" [formGroup]="group">
+  <h2>Event information</h2>
+
+  <label>
+    <span class="label-heading">
+      Title <span class="required-indicator" aria-hidden="true">*</span>
+    </span>
+    <input type="text" formControlName="title" />
+  </label>
+  <small class="error" *ngIf="hasFieldError('title', 'required')">Title is required.</small>
+  <small class="error" *ngIf="hasFieldError('title', 'minlength')">
+    Minimum 4 characters are required.
+  </small>
+
+  <label>
+    <span class="label-heading">
+      Description <span class="required-indicator" aria-hidden="true">*</span>
+    </span>
+    <textarea rows="3" formControlName="description"></textarea>
+  </label>
+  <small class="error" *ngIf="hasFieldError('description', 'required')">
+    Description is required.
+  </small>
+  <small class="error" *ngIf="hasFieldError('description', 'maxlength')">
+    Description cannot exceed 500 characters.
+  </small>
+
+  <label>
+    <span class="label-heading">
+      Category <span class="required-indicator" aria-hidden="true">*</span>
+    </span>
+    <select formControlName="category">
+      <option value="" disabled>Select category</option>
+      <option *ngFor="let category of categories" [value]="category">{{ category }}</option>
+    </select>
+  </label>
+  <small class="error" *ngIf="hasFieldError('category', 'required')">Pick a category.</small>
+
+  <div class="grid-2">
+    <label>
+      <span class="label-heading">
+        Starts on <span class="required-indicator" aria-hidden="true">*</span>
+      </span>
+      <input type="date" formControlName="startDate" />
+    </label>
+    <label>
+      <span class="label-heading">
+        Ends on <span class="required-indicator" aria-hidden="true">*</span>
+      </span>
+      <input type="date" formControlName="endDate" />
+    </label>
+  </div>
+  <small class="error" *ngIf="hasGroupError('dateOrder')">End date must be after start.</small>
+
+  <label class="toggle">
+    <input type="checkbox" formControlName="isVirtual" />
+    Host virtually
+  </label>
+
+  <label *ngIf="group.get('isVirtual')?.value">
+    <span class="label-heading">
+      Meeting URL <span class="required-indicator" aria-hidden="true">*</span>
+    </span>
+    <small class="required-note">Required when hosting virtually.</small>
+    <input type="url" formControlName="meetingUrl" placeholder="https://" />
+  </label>
+  <small class="error" *ngIf="hasFieldError('meetingUrl', 'required')">URL is required.</small>
+  <small class="error" *ngIf="hasFieldError('meetingUrl', 'pattern')">Include http(s)://</small>
+</div>

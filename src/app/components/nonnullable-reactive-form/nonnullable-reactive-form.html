@@ -19,19 +19,25 @@
     <article class="panel" formGroupName="programInfo">
       <h2>Program details</h2>
       <label>
-        Name
+        <span class="label-heading">
+          Name <span class="required-indicator" aria-hidden="true">*</span>
+        </span>
         <input formControlName="name" type="text" />
       </label>
       <small class="error" *ngIf="hasError('programInfo.name', 'minlength')">At least 3 characters.</small>
 
       <label>
-        Code
+        <span class="label-heading">
+          Code <span class="required-indicator" aria-hidden="true">*</span>
+        </span>
         <input formControlName="code" type="text" placeholder="AA-0000" />
       </label>
       <small class="error" *ngIf="hasError('programInfo.code', 'pattern')">Format AA-0000.</small>
 
       <label>
-        Program type
+        <span class="label-heading">
+          Program type <span class="required-indicator" aria-hidden="true">*</span>
+        </span>
         <select formControlName="type">
           <option *ngFor="let type of programTypes" [value]="type">{{ type | titlecase }}</option>
         </select>
@@ -39,13 +45,17 @@
       <small class="hint">{{ budgetHint() }}</small>
 
       <label>
-        Budget
+        <span class="label-heading">
+          Budget <span class="required-indicator" aria-hidden="true">*</span>
+        </span>
         <input formControlName="budget" type="number" min="1000" />
       </label>
       <small class="error" *ngIf="hasError('programInfo.budget', 'min')">Budget below threshold.</small>
 
       <label>
-        Strategic importance
+        <span class="label-heading">
+          Strategic importance <span class="required-indicator" aria-hidden="true">*</span>
+        </span>
         <select formControlName="strategicImportance">
           <option value="low">Low</option>
           <option value="medium">Medium</option>
@@ -57,19 +67,25 @@
     <article class="panel" formGroupName="primaryContact">
       <h2>Primary contact</h2>
       <label>
-        Full name
+        <span class="label-heading">
+          Full name <span class="required-indicator" aria-hidden="true">*</span>
+        </span>
         <input formControlName="fullName" type="text" />
       </label>
       <small class="error" *ngIf="hasError('primaryContact.fullName', 'required')">Required.</small>
 
       <label>
-        Email
+        <span class="label-heading">
+          Email <span class="required-indicator" aria-hidden="true">*</span>
+        </span>
         <input formControlName="email" type="email" />
       </label>
       <small class="error" *ngIf="hasError('primaryContact.email', 'email')">Invalid email.</small>
 
       <label>
-        Timezone
+        <span class="label-heading">
+          Timezone <span class="required-indicator" aria-hidden="true">*</span>
+        </span>
         <input formControlName="timezone" type="text" />
       </label>
 
@@ -92,17 +108,23 @@
     <div class="member-card" *ngFor="let memberGroup of members.controls; let i = index; trackBy: trackMember" [formGroupName]="i">
       <div class="member-grid">
         <label>
-          Name
+          <span class="label-heading">
+            Name <span class="required-indicator" aria-hidden="true">*</span>
+          </span>
           <input formControlName="name" type="text" />
         </label>
         <label>
-          Role
+          <span class="label-heading">
+            Role <span class="required-indicator" aria-hidden="true">*</span>
+          </span>
           <select formControlName="role">
             <option *ngFor="let role of roles" [value]="role">{{ role }}</option>
           </select>
         </label>
         <label>
-          Availability (hrs)
+          <span class="label-heading">
+            Availability (hrs) <span class="required-indicator" aria-hidden="true">*</span>
+          </span>
           <input formControlName="availability" type="number" min="10" max="120" />
         </label>
         <button type="button" class="btn btn--ghost" (click)="removeMember(i)" [disabled]="members.length === 1">
@@ -150,7 +172,9 @@
     <div class="sprint-card" *ngFor="let sprint of sprints.controls; let s = index; trackBy: trackSprint" [formGroupName]="s">
       <div class="member-grid">
         <label>
-          Title
+          <span class="label-heading">
+            Title <span class="required-indicator" aria-hidden="true">*</span>
+          </span>
           <input formControlName="title" type="text" />
         </label>
         <label>
@@ -158,7 +182,9 @@
           <input formControlName="goal" type="text" />
         </label>
         <label>
-          Capacity
+          <span class="label-heading">
+            Capacity <span class="required-indicator" aria-hidden="true">*</span>
+          </span>
           <input formControlName="capacity" type="number" min="40" />
         </label>
         <button type="button" class="btn btn--ghost" (click)="removeSprint(s)" [disabled]="sprints.length === 1">
@@ -167,11 +193,15 @@
       </div>
       <div class="member-grid">
         <label>
-          Starts
+          <span class="label-heading">
+            Starts <span class="required-indicator" aria-hidden="true">*</span>
+          </span>
           <input formControlName="startDate" type="date" />
         </label>
         <label>
-          Ends
+          <span class="label-heading">
+            Ends <span class="required-indicator" aria-hidden="true">*</span>
+          </span>
           <input formControlName="endDate" type="date" />
         </label>
       </div>

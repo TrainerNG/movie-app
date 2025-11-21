@@ -1,0 +1,42 @@
+<div class="panel" [formGroup]="group">
+  <h2>Organizer</h2>
+
+  <label>
+    <span class="label-heading">
+      Full name <span class="required-indicator" aria-hidden="true">*</span>
+    </span>
+    <input type="text" formControlName="fullName" />
+  </label>
+  <small class="error" *ngIf="hasFieldError('fullName', 'required')">Name is mandatory.</small>
+
+  <label>
+    <span class="label-heading">
+      Email <span class="required-indicator" aria-hidden="true">*</span>
+    </span>
+    <input type="email" formControlName="email" />
+  </label>
+  <small class="error" *ngIf="hasFieldError('email', 'required')">Email is required.</small>
+  <small class="error" *ngIf="hasFieldError('email', 'email')">Provide a valid email.</small>
+
+  <ng-container *ngIf="contactPreference === 'phone'">
+    <label>
+      <span class="label-heading">
+        Phone <span class="required-indicator" aria-hidden="true">*</span>
+      </span>
+      <small class="required-note">Required when contact preference is Phone.</small>
+      <input type="tel" formControlName="phone" />
+    </label>
+    <small class="error" *ngIf="hasFieldError('phone', 'required')">Phone required for calls.</small>
+    <small class="error" *ngIf="hasFieldError('phone', 'pattern')">Use country code and digits.</small>
+  </ng-container>
+
+  <label>
+    <span class="label-heading">
+      Preferred contact channel <span class="required-indicator" aria-hidden="true">*</span>
+    </span>
+    <select formControlName="contactPreference">
+      <option value="email">Email</option>
+      <option value="phone">Phone</option>
+    </select>
+  </label>
+</div>

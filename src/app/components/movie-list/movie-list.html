@@ -1,5 +1,11 @@
 <div class="movie-list-container">
-    <h1>Movie Listing</h1>
+    <div class="demo-links">
+        <h1>Movie Listing</h1>
+        <div class="link-group">
+            <a routerLink="/reactive-form-demo" class="nav-link">Advanced Reactive Form</a>
+            <a routerLink="/nonnullable-form-demo" class="nav-link">Non-Nullable Form</a>
+        </div>
+    </div>
     <div class="search-container">
         <input type="text" [(ngModel)]="query" (keyup.enter)="search()" placeholder="Search for movies..."
         class="search-input">
