@@ -1,0 +1,45 @@
+<form class="program-shell" [formGroup]="programForm" (ngSubmit)="submitProgram()">
+    <header class="program-shell__header">
+        <div>
+            <p class="eyebrow">Advanced reactive form - Non Nullable</p>
+            <h1>Engineering Program Planner</h1>
+        </div>
+    </header>
+
+    <div class="grid">
+        <article class="panel" formGroupName="programInfo">
+            <h2>Program Details</h2>
+            <label>
+                <span class="label-heading">
+                    Name <span class="required-indicator">*</span>
+                </span>
+                <input type="text" formControlName="name">
+            </label>
+            <small class="error" *ngIf="hasError('programInfo.name','minlength')">
+              Atleast 3 characters
+            </small>
+
+             <label>
+                <span class="label-heading">
+                    Code <span class="required-indicator">*</span>
+                </span>
+                <input type="text" formControlName="code">
+            </label>
+            <small class="error" *ngIf="hasError('programInfo.code','pattern')">
+              Format AA-0000
+            </small>
+
+            <label>
+                <span class="label-heading">
+                    Program Type <span class="required-indicator">*</span>
+                </span>
+                <select formControlName="type">
+                    <option *ngFor="let type of programTypes" [value]="type">{{type | titlecase}}</option>
+                </select>
+            </label>
+            <small class="error" *ngIf="hasError('programInfo.code','pattern')">
+              Format AA-0000
+            </small>
+        </article>
+    </div>
+</form>
