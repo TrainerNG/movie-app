@@ -16,17 +16,17 @@
                 <input type="text" formControlName="name">
             </label>
             <small class="error" *ngIf="hasError('programInfo.name','minlength')">
-              Atleast 3 characters
+                Atleast 3 characters
             </small>
 
-             <label>
+            <label>
                 <span class="label-heading">
                     Code <span class="required-indicator">*</span>
                 </span>
                 <input type="text" formControlName="code">
             </label>
             <small class="error" *ngIf="hasError('programInfo.code','pattern')">
-              Format AA-0000
+                Format AA-0000
             </small>
 
             <label>
@@ -37,9 +37,126 @@
                     <option *ngFor="let type of programTypes" [value]="type">{{type | titlecase}}</option>
                 </select>
             </label>
-            <small class="error" *ngIf="hasError('programInfo.code','pattern')">
-              Format AA-0000
+            <small class="hint">
+                {{budgetHint()}}
             </small>
+
+
+             <label>
+                <span class="label-heading">
+                    Budget <span class="required-indicator">*</span>
+                </span>
+                <input type="number" formControlName="budget" min="1000" />
+            </label>
+
+            <small class="error" *ngIf="hasError('programInfo.budget' ,'min')">
+                Budget below threshold.
+            </small>
+
+
+              <label>
+                <span class="label-heading">
+                    Strategic Importance <span class="required-indicator">*</span>
+                </span>
+                <select formControlName="strategicImportance">
+                    <option value="low">Low</option>
+                    <option value="medium">Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </label>
+        </article>
+
+        <article class="panel" formGroupName="primaryContact">
+            <h2>Primary Contact</h2>
+            <label>
+                <span class="label-heading">
+                    Full name <span class="required-indicator">*</span>
+                </span>
+                <input type="text" formControlName="fullName">
+            </label>
+            <small class="error" *ngIf="hasError('primaryContact.fullName','required')">Full name is required</small>
+
+
+            <label>
+                <span class="label-heading">
+                    Email <span class="required-indicator">*</span>
+                </span>
+                <input type="email" formControlName="email">
+            </label>
+            <small class="error" *ngIf="hasError('primaryContact.email','email')">Invalid Email</small>
+
+
+             <label>
+                <span class="label-heading">
+                Timezone <span class="required-indicator">*</span>
+                </span>
+                <input type="text" formControlName="timezone">
+            </label>
         </article>
     </div>
+
+        <article class="panel" formArrayName="members">
+            <header class="panel__header">
+                <div>
+                    <h2>Program members</h2>
+                    <p class="subtitle">Nested FormArray with inner skill arrays.</p>
+                </div>
+                <button class="btn" type="button" (click)="addMember()">Add member</button>
+            </header>
+
+            <div class="member-card" *ngFor="let memberGroup of members.controls;let i= index;" [formGroupName]="i">
+                <div class="member-grid">
+                    <label>
+                        <span class="label-heading">
+                            Name <span class="required-indicator">*</span>
+                        </span>
+                        <input type="text" formControlName="name">
+                    </label>
+
+                    <label>
+                        <span class="label-heading">
+                            Role <span class="required-indicator">*</span>
+                        </span>
+                        <select formControlName="role">
+                        <option *ngFor="let role of roles" [value]="role">{{role}}</option>
+                        </select>
+                    </label>
+
+                      <label>
+                        <span class="label-heading">
+                            Avalaiblity (hrs) <span class="required-indicator">*</span>
+                        </span>
+                        <input type="number" formControlName="availability" min="10" max="120">
+                    </label>
+
+                    <button type="button" class="btn" (click)="removeMember(i)">Remove</button>
+                </div>
+
+                <div class="skill-set" formArrayName="skillSet">
+                    <p class="eyebrow">Skill set</p>
+                    <div class="skills" *ngFor="let skill of memberGroup.controls.skillSet.controls;let j= index">
+                        <input type="text" [formControlName]="j">
+                        <button type="button" class="btn btn--ghost" (click)="removeSkill(i,j)">X </button>
+                    </div>
+                    <button type="button" class="btn btn--ghost" (click)="addSkill(i)">+ Skill</button>
+                </div>
+            </div>
+
+            <div class="insights">
+                <div>
+                    <p class="eyebrow">Avg Avalaiblity</p>
+                    <h3>{{memberInsights().avgAvailability}} hrs</h3>
+                </div>
+
+                <div>
+                    <p class="eyebrow">Overallocated</p>
+                    <h3>{{memberInsights().overallocated}}</h3>
+                </div>
+
+                 <div>
+                    <p class="eyebrow">Total Skills</p>
+                    <h3>{{memberInsights().totalSkills}}</h3>
+                </div>
+            </div>
+        </article>
 </form>

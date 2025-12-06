@@ -8,3 +8,10 @@ export interface MovieInterface {
     adult:boolean;
     backdrop_path: string;
 }
+
+export interface MemberBluePrint {
+    name?: string;
+    role?: string;
+    avalaiblity?: number;
+    skills?: string[]
+}

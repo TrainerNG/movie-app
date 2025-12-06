@@ -2,10 +2,11 @@ import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControlStatus, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { TicketFormValue } from '../../interfaces/ticket-form-value';
 import { CommonModule } from '@angular/common';
+import { EventInfoPanel } from "../event-info-panel/event-info-panel";
 
 @Component({
   selector: 'app-advanced-reactive-form',
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, EventInfoPanel],
   templateUrl: './advanced-reactive-form.html',
   styleUrl: './advanced-reactive-form.css',
 })
@@ -105,6 +106,9 @@ export class AdvancedReactiveForm {
   }
 
 
+  get eventInfoGroup() : FormGroup{
+    return this.eventPlannerForm.get('eventInfo') as FormGroup
+  }
 
   readonly eventPlannerForm = this.fb.group({
     eventInfo: this.fb.group({

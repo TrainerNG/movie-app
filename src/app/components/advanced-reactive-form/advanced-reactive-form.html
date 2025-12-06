@@ -19,7 +19,7 @@
     </header>
 
     <div class="shell__grid">
-        <div class="panel" formGroupName="eventInfo">
+        <!-- <div class="panel" formGroupName="eventInfo">
             <h2>Event Information</h2>
             <label for="">
                 <span class="label-heading">
@@ -89,7 +89,8 @@
 
             <small class="error" *ngIf="hasError('eventInfo.meetingUrl', 'required')">URL is required</small>
             <small class="error" *ngIf="hasError('eventInfo.meetingUrl', 'pattern')">Include https(s)://</small>
-        </div>
+        </div> -->
+   <app-event-info-panel [group]="eventInfoGroup" [categories]="categories()"/>
 
         <div class="panel" formGroupName="organizer">
             <h2>Organizer</h2>
