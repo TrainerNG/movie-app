@@ -1,4 +1,4 @@
-<div class="panel" [formGroup]="group">
+<div class="panel" [formGroup]="form" (focusout)="handleTouched()">
   <h2>Organizer</h2>
 
   <label>
@@ -18,7 +18,7 @@
   <small class="error" *ngIf="hasFieldError('email', 'required')">Email is required.</small>
   <small class="error" *ngIf="hasFieldError('email', 'email')">Provide a valid email.</small>
 
-  <ng-container *ngIf="contactPreference === 'phone'">
+  <ng-container *ngIf="contactPreferenceValue === 'phone'">
     <label>
       <span class="label-heading">
         Phone <span class="required-indicator" aria-hidden="true">*</span>

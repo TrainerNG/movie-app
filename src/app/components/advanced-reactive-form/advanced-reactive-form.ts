@@ -15,6 +15,10 @@ import { debounceTime } from 'rxjs/operators';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { EventInfoPanelComponent } from '../event-info-panel/event-info-panel';
 import { OrganizerInfoPanelComponent } from '../organizer-info-panel/organizer-info-panel';
+import {
+  createDefaultEventInfoFormValue,
+  createDefaultOrganizerFormValue,
+} from '../shared/form-values';
 
 interface TicketFormValue {
   label: string;
@@ -37,29 +41,11 @@ export class AdvancedReactiveForm {
   readonly categories = signal(['Conference', 'Workshop', 'Meetup', 'Watch Party']);
   readonly summary = signal({ totalCapacity: 0, potentialRevenue: 0 });
   readonly lastSavedAt = signal<string | null>(null);
-  readonly contactPreference = signal<'email' | 'phone'>('email');
-
   protected submittedPayload: unknown = null;
 
   readonly eventPlannerForm = this.fb.group({
-    eventInfo: this.fb.group(
-      {
-        title: ['', [Validators.required, Validators.minLength(4)]],
-        description: ['', [Validators.required, Validators.maxLength(500)]],
-        category: ['', Validators.required],
-        startDate: ['', Validators.required],
-        endDate: ['', Validators.required],
-        isVirtual: [false],
-        meetingUrl: [''],
-      },
-      { validators: this.dateOrderValidator('startDate', 'endDate') }
-    ),
-    organizer: this.fb.group({
-      fullName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: [''],
-      contactPreference: ['email', Validators.required],
-    }),
+    eventInfo: this.fb.nonNullable.control(createDefaultEventInfoFormValue()),
+    organizer: this.fb.nonNullable.control(createDefaultOrganizerFormValue()),
     tickets: this.fb.array([this.createTicketRow()]),
     agreement: [false, Validators.requiredTrue],
   });
@@ -67,22 +53,12 @@ export class AdvancedReactiveForm {
   readonly formStatus = signal<FormControlStatus>(this.eventPlannerForm.status);
 
   constructor() {
-    this.handleVirtualToggle();
-    this.handleContactPreference();
     this.bootstrapRealtimeSummary();
     this.updateSummary();
 
     this.eventPlannerForm.statusChanges
       .pipe(takeUntilDestroyed())
       .subscribe((status) => this.formStatus.set(status));
-  }
-
-  get eventInfoGroup(): FormGroup {
-    return this.eventPlannerForm.get('eventInfo') as FormGroup;
-  }
-
-  get organizerGroup(): FormGroup {
-    return this.eventPlannerForm.get('organizer') as FormGroup;
   }
 
   get tickets(): FormArray<FormGroup> {
@@ -116,8 +92,8 @@ export class AdvancedReactiveForm {
 
   resetForm(): void {
     this.eventPlannerForm.reset({
-      organizer: { contactPreference: 'email' },
-      eventInfo: { isVirtual: false },
+      eventInfo: createDefaultEventInfoFormValue(),
+      organizer: createDefaultOrganizerFormValue(),
       agreement: false,
     });
     this.tickets.clear();
@@ -133,51 +109,6 @@ export class AdvancedReactiveForm {
 
   trackTicket(index: number): number {
     return index;
-  }
-
-  private handleVirtualToggle(): void {
-    const isVirtualControl = this.eventPlannerForm.get('eventInfo.isVirtual');
-    const meetingUrlControl = this.eventPlannerForm.get('eventInfo.meetingUrl');
-
-    isVirtualControl?.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe((isVirtual: boolean | null) => {
-        if (!meetingUrlControl) {
-          return;
-        }
-        if (Boolean(isVirtual)) {
-          meetingUrlControl.addValidators([Validators.required, Validators.pattern(/^https?:\/\//i)]);
-        } else {
-          meetingUrlControl.clearValidators();
-          meetingUrlControl.setValue('', { emitEvent: false });
-        }
-        meetingUrlControl.updateValueAndValidity();
-      });
-  }
-
-  private handleContactPreference(): void {
-    const contactControl = this.eventPlannerForm.get('organizer.contactPreference');
-    const phoneControl = this.eventPlannerForm.get('organizer.phone');
-
-    const applyPreferenceRules = (preference: string | null): void => {
-      const nextPreference = ((preference ?? 'email') as 'email' | 'phone');
-      this.contactPreference.set(nextPreference);
-
-      if (!phoneControl) {
-        return;
-      }
-
-      if (nextPreference === 'phone') {
-        phoneControl.addValidators([Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)]);
-      } else {
-        phoneControl.clearValidators();
-      }
-      phoneControl.updateValueAndValidity();
-    };
-
-    applyPreferenceRules(contactControl?.value ?? 'email');
-
-    contactControl?.valueChanges.pipe(takeUntilDestroyed()).subscribe(applyPreferenceRules);
   }
 
   private bootstrapRealtimeSummary(): void {

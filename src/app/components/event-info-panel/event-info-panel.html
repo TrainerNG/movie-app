@@ -1,4 +1,4 @@
-<div class="panel" [formGroup]="group">
+<div class="panel" [formGroup]="form" (focusout)="handleTouched()">
   <h2>Event information</h2>
 
   <label>
@@ -57,7 +57,7 @@
     Host virtually
   </label>
 
-  <label *ngIf="group.get('isVirtual')?.value">
+  <label *ngIf="form.get('isVirtual')?.value">
     <span class="label-heading">
       Meeting URL <span class="required-indicator" aria-hidden="true">*</span>
     </span>

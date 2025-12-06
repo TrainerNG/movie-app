@@ -16,12 +16,9 @@
   </header>
 
   <div class="shell__grid">
-    <app-event-info-panel [group]="eventInfoGroup" [categories]="categories()"></app-event-info-panel>
+    <app-event-info-panel formControlName="eventInfo" [categories]="categories()"></app-event-info-panel>
 
-    <app-organizer-info-panel
-      [group]="organizerGroup"
-      [contactPreference]="contactPreference()"
-    ></app-organizer-info-panel>
+    <app-organizer-info-panel formControlName="organizer"></app-organizer-info-panel>
   </div>
 
   <div class="panel" formArrayName="tickets">
