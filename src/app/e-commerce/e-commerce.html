@@ -1,0 +1,35 @@
+<div class="ecommerce-container">
+  <header class="header">
+    <h1>Angular E-Commerce</h1>
+    <nav class="tabs">
+      <button 
+        [class.active]="activeTab() === 'products'"
+        (click)="setActiveTab('products')"
+      >
+        Products
+      </button>
+      <button 
+        [class.active]="activeTab() === 'cart'"
+        (click)="setActiveTab('cart')"
+        class="cart-tab"
+      >
+        Cart 
+        <span class="badge" *ngIf="cartItemCount() > 0">
+          {{ cartItemCount() }}
+        </span>
+      </button>
+    </nav>
+  </header>
+
+  <main class="main-content">
+    <app-product-list 
+      *ngIf="activeTab() === 'products'"
+      (cartUpdated)="onCartUpdated($event)"
+    ></app-product-list>
+    
+    <app-cart 
+      *ngIf="activeTab() === 'cart'"
+      (itemRemoved)="onCartUpdated($event)"
+    ></app-cart>
+  </main>
+</div>
