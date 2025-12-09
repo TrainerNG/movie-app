@@ -1,0 +1,17 @@
+<div class="product-list">
+    <div class="category-filters">
+        <h2>Shop by Category</h2>
+        <div class="category-buttons">
+            <button *ngFor="let category of categories" [class.active]="selectedCategory() === category"
+                (click)="selectedCategory.set(category)">
+                {{category}}
+            </button>
+        </div>
+    </div>
+
+    <div class="products-grid">
+        <ng-container *ngFor="let product of filteredProducts()">
+         <app-product-card [product]="product"/>
+        </ng-container>
+    </div>
+</div>
