@@ -3,8 +3,8 @@
     <div class="search-container">
         <input type="text" [(ngModel)]="query" (keyup.enter)="search()" placeholder="Search for movies..."
         class="search-input">
-
         <button (click)="search()" class="search-btn">Search</button>
+        <a routerLink="shop" class="shop-link">Shop</a>
     </div>
     <div *ngIf="loading" class="loading">loading...</div>
 

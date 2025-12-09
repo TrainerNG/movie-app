@@ -2,6 +2,7 @@
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+    gap: 8px;
 }
 
 h1{
@@ -60,6 +61,25 @@ h1{
 .page-btn:disabled{
     background-color: #ccc;
     cursor: not-allowed;
+}
+
+.shop-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.shop-link:hover {
+    background-color: #218838;
+    text-decoration: none;
 }
 
 .no-results{
