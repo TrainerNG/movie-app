@@ -2,11 +2,14 @@ import { Component, inject, signal } from '@angular/core';
 import { AbstractControl, FormArray, FormBuilder, FormControlStatus, FormGroup, ReactiveFormsModule, ValidationErrors, ValidatorFn, Validators } from '@angular/forms';
 import { TicketFormValue } from '../../interfaces/ticket-form-value';
 import { CommonModule } from '@angular/common';
-import { EventInfoPanel } from "../event-info-panel/event-info-panel";
+import { createDefaultEventInfoFormValue } from '../../interfaces/event-info-form';
+import { EventInfoPanel } from '../cva/event-info-panel/event-info-panel';
+import { createDefaultOrganizerFormValue } from '../../interfaces/organizer-form-value';
+import { OrganizerInfoPanel } from '../cva/organizer-info-panel/organizer-info-panel';
 
 @Component({
   selector: 'app-advanced-reactive-form',
-  imports: [ReactiveFormsModule, CommonModule, EventInfoPanel],
+  imports: [ReactiveFormsModule, CommonModule, EventInfoPanel, OrganizerInfoPanel],
   templateUrl: './advanced-reactive-form.html',
   styleUrl: './advanced-reactive-form.css',
 })
@@ -68,7 +71,7 @@ export class AdvancedReactiveForm {
       }
       else {
         meetingUrlControl.clearValidators();
-        meetingUrlControl.setValue('');
+        // meetingUrlControl.setValue('');
       }
       meetingUrlControl.updateValueAndValidity();
     })
@@ -87,7 +90,7 @@ export class AdvancedReactiveForm {
       }
 
       if (nextPreference === 'phone') {
-        phoneControl.addValidators([Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)])
+        phoneControl.setValidators([Validators.required, Validators.pattern(/^\+?[0-9]{10,15}$/)])
       }
       else {
         phoneControl.clearValidators();
@@ -106,31 +109,13 @@ export class AdvancedReactiveForm {
   }
 
 
-  get eventInfoGroup() : FormGroup{
-    return this.eventPlannerForm.get('eventInfo') as FormGroup
-  }
+  // get eventInfoGroup() : FormGroup{
+  //   return this.eventPlannerForm.get('eventInfo') as FormGroup
+  // }
 
   readonly eventPlannerForm = this.fb.group({
-    eventInfo: this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(4)]],
-      description: ['', [Validators.required, Validators.maxLength(500)]],
-      category: ['', Validators.required],
-      startDate: ['', Validators.required],
-      endDate: ['', Validators.required],
-      isVirtual: [false],
-      meetingUrl: ['', Validators.maxLength(100)]
-    },
-      {
-        validators: this.dateOrderValidator('startDate', 'endDate')
-      }
-    ),
-    organizer: this.fb.group({
-      fullName: ['', Validators.required],
-      email: ['', [Validators.required, Validators.email]],
-      phone: [''],
-      contactPreference: ['email', Validators.required]
-    }),
-
+    eventInfo:this.fb.nonNullable.control(createDefaultEventInfoFormValue()),
+    organizer: this.fb.nonNullable.control(createDefaultOrganizerFormValue()),
     tickets: this.fb.array([this.createTicketRow()]),
     agreement:[false,Validators.requiredTrue]
   })

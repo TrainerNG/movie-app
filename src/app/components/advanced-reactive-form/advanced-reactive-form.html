@@ -90,51 +90,12 @@
             <small class="error" *ngIf="hasError('eventInfo.meetingUrl', 'required')">URL is required</small>
             <small class="error" *ngIf="hasError('eventInfo.meetingUrl', 'pattern')">Include https(s)://</small>
         </div> -->
-   <app-event-info-panel [group]="eventInfoGroup" [categories]="categories()"/>
+   <!-- <app-event-info-panel [group]="eventInfoGroup" [categories]="categories()"/> -->
+    <app-event-info-panel-cva formControlName = "eventInfo" [categories]="categories()"/>
 
-        <div class="panel" formGroupName="organizer">
-            <h2>Organizer</h2>
-            <label for="">
-                <span class="label-heading">
-                    Full Name <span class="required-indicator">*</span>
-                </span>
-                <input type="text" formControlName="fullName">
-            </label>
-            <small class="error" *ngIf="hasError('organizer.fullName', 'required')">Name is mandatory</small>
 
-            <label>
-                <span class="label-heading">
-                    Email <span class="required-indicator">*</span>
-                </span>
-                <input type="email" formControlName="email">
-            </label>
-            <small class="error" *ngIf="hasError('organizer.email', 'required')">Email is
-                required</small>
-
-            <ng-container *ngIf="contactPreference() === 'phone'">
-                <label>
-                    <span class="label-heading">
-                        Phone <span class="required-indicator">*</span>
-                    </span>
-
-                    <input type="tel" formControlName="phone" />
-                </label>
-
-                <small *ngIf="hasError('organizer.phone' , 'required')">Phone Required for calls</small>
-                <small *ngIf="hasError('organizer.phone' , 'pattern')">Use country code and digits</small>
-            </ng-container>
-
-            <label>
-                <span class="label-heading">
-                    Preferred contact channel <span class="required-indicator">*</span>
-                </span>
-
-                <select formControlName="contactPreference">
-                    <option value="email">Email</option>
-                    <option value="phone">Phone</option>
-                </select>
-            </label>
-        </div>
+   <!-- ON STUDENTS -->
+        <app-organizer-info-panel formControlName="organizer"/>
     </div>
 
     <div class="panel" formArrayName="tickets">

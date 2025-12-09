@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 @Component({
-  selector: 'app-event-info-panel',
+  selector: 'app-event-info-panel-cva',
   imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './event-info-panel.html',
   styleUrl: './event-info-panel.css',
