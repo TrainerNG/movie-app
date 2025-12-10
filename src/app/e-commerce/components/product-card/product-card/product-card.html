@@ -1,4 +1,4 @@
-<div class="product-card" [class.out-of-stock]="product.stock === 0" #productCard>
+<div class="product-card" [class.out-of-stock]="product.stock === 0">
   <div class="product-image">
     <img [src]="product.image" [alt]="product.name" loading="lazy">
     <div *ngIf="product.stock === 0" class="out-of-stock-badge">Out of Stock</div>
@@ -8,8 +8,12 @@
     <p class="product-price">${{ product.price.toFixed(2) }}</p>
     <p class="product-description" *ngIf="product.description">{{ product.description }}</p>
     
-    <!-- Container for dynamic component -->
-    <div #reviewsContainer></div>
+    <!-- Projected content from parent -->
+    <ng-content select="[productActions]"></ng-content>
+    
+    <!-- Container for dynamic reviews component -->
+     
+    <div #reviewsContainer class="reviews-container"></div>
     
     <div class="product-actions">
       <button 

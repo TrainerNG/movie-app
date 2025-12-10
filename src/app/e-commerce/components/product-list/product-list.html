@@ -17,8 +17,8 @@
         [product]="product"
         (addToCart)="addToCart(product)">
         <!-- Projected content example -->
-        <ng-container #productActions>
-          <div class="special-offer" *ngIf="product.id === 1">
+        <ng-container productActions *ngIf="product.id === 1">
+          <div class="special-offer">
             🔥 Special offer: Free shipping!
           </div>
         </ng-container>
