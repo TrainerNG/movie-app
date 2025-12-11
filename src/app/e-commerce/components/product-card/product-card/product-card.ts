@@ -18,6 +18,7 @@ export class ProductCardComponent {
   @ContentChild('productActions', { read: ElementRef }) productActions: ElementRef | undefined;
   
   reviewComponentRef: any = null;
+  showReviews = false;
 
   constructor() {}
 
@@ -28,8 +29,11 @@ export class ProductCardComponent {
   }
 
   async loadReviews() {
-    // Clear any existing dynamic component
-    this.clearReviews();
+    if (this.reviewComponentRef) {
+      this.clearReviews();
+      this.showReviews = false;
+      return;
+    }
     
     if (!this.reviewsContainer) {
       console.warn('Reviews container not found');
@@ -37,16 +41,29 @@ export class ProductCardComponent {
     }
     
     try {
-      // Dynamically import the component
-      const { ProductReviewComponent } = await import(
-        '../../product-review/product-review/product-review'
-      );
-      
-      // Create and add the component
-      this.reviewComponentRef = this.reviewsContainer.createComponent(ProductReviewComponent);
-      this.reviewComponentRef.instance.productId = this.product.id;
+      // Set loading state
+      this.showReviews = true;
+      // Use setTimeout to avoid ExpressionChangedAfterItHasBeenCheckedError
+      // setTimeout(async () => {
+        try {
+          // Dynamically import the component
+          const { ProductReviewComponent } = await import(
+            '../../product-review/product-review/product-review'
+          );
+          
+          // Create and add the component
+          this.reviewComponentRef = this.reviewsContainer.createComponent(ProductReviewComponent);
+          // this.reviewComponentRef.instance.productId = this.product.id;
+          // After loading is complete
+          this.showReviews = true;
+        } catch (error) {
+          console.error('Error loading reviews:', error);
+          this.showReviews = false;
+        }
+      // });
     } catch (error) {
-      console.error('Error loading reviews:', error);
+      console.error('Error in loadReviews:', error);
+      this.showReviews = false;
     }
   }
 
@@ -54,6 +71,11 @@ export class ProductCardComponent {
     if (this.reviewComponentRef) {
       this.reviewComponentRef.destroy();
       this.reviewComponentRef = null;
+    }
+    if (this.reviewsContainer) {
+      this.reviewsContainer.clear();
+      // const container = this.reviewsContainer.element.nativeElement;
+      // container.classList.remove('loaded', 'loading');
     }
   }
 

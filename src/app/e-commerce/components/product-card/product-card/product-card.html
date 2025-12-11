@@ -34,8 +34,9 @@
       <!-- Toggle reviews button -->
       <button 
         class="toggle-reviews" 
-        (click)="reviewComponentRef ? clearReviews() : loadReviews()">
-        {{ reviewComponentRef ? 'Hide Reviews' : 'Show Reviews' }}
+        (click)="loadReviews()"
+        [disabled]="!reviewsContainer">
+        {{ showReviews ? 'Hide Reviews' : 'Show Reviews' }}
       </button>
     </div>
   </div>

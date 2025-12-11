@@ -70,6 +70,13 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 2rem;
   padding: 1rem 0;
+  align-items: start; /* Align items to the start of the grid cell */
+}
+
+/* Ensure grid items don't stretch */
+.products-grid > * {
+  display: block;
+  width: 100%;
 }
 
 /* Responsive adjustments */

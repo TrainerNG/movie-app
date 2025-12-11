@@ -2,13 +2,15 @@
 .product-card {
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible; /* Changed to visible to allow reviews to show */
   transition: all 0.3s ease;
   background: white;
   display: flex;
   flex-direction: column;
-  height: 100%;
   box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  position: relative;
+  width: 100%;
+  min-height: 670px;
 }
 
 .product-card:hover {
@@ -53,10 +55,11 @@
 }
 
 .product-details {
-  padding: 1.5rem;
-  flex-grow: 1;
+  padding: 1.25rem;
+  flex: 1;
   display: flex;
   flex-direction: column;
+  min-height: 0; /* Allows content to scroll if needed */
 }
 
 .product-name {
@@ -152,17 +155,68 @@
   background: #e0f2fe;
 }
 
-/* Add some spacing for the reviews container */
-:host ::ng-deep .product-review {
+/* Reviews container */
+.reviews-container {
   margin-top: 1rem;
-  border-top: 1px solid #e2e8f0;
-  padding-top: 1rem;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  opacity: 0;
+  visibility: hidden;
 }
 
-/* Add to product-card.css */
-.reviews-section {
+.reviews-container.loaded {
+  max-height: 1000px; /* Adjust based on your needs */
+  opacity: 1;
+  visibility: visible;
+}
+
+.reviews-container.loading {
+  opacity: 0.5;
+  max-height: 1000px; /* Adjust based on your needs */
+  visibility: visible;
+}
+
+/* Spacing for the reviews */
+:host ::ng-deep .product-review {
+  border-top: 1px solid #e2e8f0;
+  padding-top: 1rem;
   margin-top: 1rem;
-  min-height: 50px;
+}
+
+/* Special offer styling */
+:host ::ng-deep .special-offer {
+  background: #fffbeb;
+  color: #d97706;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  text-align: center;
+  border: 1px solid #fcd34d;
+  margin: 0.5rem 0 0;
+  display: block;
+}
+
+/* Ensure consistent spacing for product actions */
+:host ::ng-deep [productActions] {
+  margin-top: auto; /* Push to bottom */
+  padding: 0.75rem 1.25rem 1.25rem;
+  border-top: 1px solid #f0f0f0;
+  margin-top: auto; /* Ensures it stays at the bottom */
+}
+
+/* Product details container */
+.product-details {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  min-height: 0; /* Allows content to scroll if needed */
+}
+
+/* Make the host component take the height of its content */
+:host {
+  display: block;
+  height: auto;
 }
 
 .loading-indicator {
@@ -170,12 +224,4 @@
   text-align: center;
   color: #666;
   font-style: italic;
-}
-
-.reviews-container {
-  transition: opacity 0.3s ease;
-}
-
-.reviews-container.loading {
-  opacity: 0.5;
 }
