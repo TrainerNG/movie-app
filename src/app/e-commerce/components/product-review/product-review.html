@@ -1,0 +1,10 @@
+<div class="product-review">
+    <h4>Customer Reviews</h4>
+    <div class="review" *ngFor="let review of reviews">
+        <div class="review-header">
+            <span class="reviewer">{{review.name}}</span>
+            <div class="rating">{{review.rating}} / 5</div>
+            <p class="review-text">{{review.text}}</p>
+        </div>
+    </div>
+</div>

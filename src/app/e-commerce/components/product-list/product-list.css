@@ -42,3 +42,14 @@
     gap: 2rem;
     padding: 1rem 0;
 }
+
+.special-offer{
+    background: #fffbeb;
+    color: #d97706;
+    padding: .5rem;
+    border-radius: 4px;
+    font-size: .85rem;
+    margin-top: .5rem;
+    text-align: center;
+    border: 1px solid #fcd34d;
+}

@@ -6,5 +6,20 @@
         <h3 class="product-name">{{product.name}}</h3>
         <p class="product-price">{{product.price.toFixed(2)}}</p>
         <p class="product-description">{{product.description}}</p>
+
+        <ng-content select="[productActions]"></ng-content>
+
+        <div #reviewsContainer class="reviews-container"></div>
+
+        <div class="product-actions">
+            <button class="add-to-cart">
+                Add to Cart
+            </button>
+
+             <button class="toggle-reviews"
+             (click)="reviewComponentRef ? clearReviews() : loadReviews()">
+                {{reviewComponentRef ? 'Hide Reviews' : 'Show Reviews'}}
+            </button>
+        </div>
     </div>
 </div>
