@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, EventEmitter, Output, signal } from '@angular/core';
 import { Product } from '../../../interfaces/product';
 import { CommonModule } from '@angular/common';
 import { ProductCard } from "../product-card/product-card";
@@ -10,8 +10,11 @@ import { ProductCard } from "../product-card/product-card";
   styleUrl: './product-list.css',
 })
 export class ProductList {
+  @Output() cartUpdated = new EventEmitter<number>();
   readonly categories = ['All', 'Electronics' ,'Clothing' ,'Books' , 'Home'];
   selectedCategory = signal('All');
+
+  cartItems = signal<{product: Product, quantity: number}[]>([]);
   readonly products = signal<Product[]>(
     [
       {
@@ -46,5 +49,20 @@ export class ProductList {
 
   selectCategory(category: string){
     this.selectedCategory.set(category);
+  }
+
+  addToCart(product: Product){
+   const existingItem = this.cartItems().find(item => item.product.id === product.id);
+
+   if(existingItem){
+    existingItem.quantity++;
+    // SPREAD OPERATOR
+    this.cartItems.update(item => [...item]);
+   }
+   else{
+    this.cartItems.update(item => [...item,{product, quantity:1}])
+   }
+
+   this.cartUpdated.emit(this.cartItems().reduce((sum,item)=> sum + item.quantity,0));
   }
 }

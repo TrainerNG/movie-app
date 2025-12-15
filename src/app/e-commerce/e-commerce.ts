@@ -10,8 +10,13 @@ import { CommonModule } from '@angular/common';
 })
 export class ECommerce {
 activeTab = signal<'products' | 'cart'> ('products');
+cartItemCount = signal(0);
 
 setActiveTab(tab: 'products' | 'cart'){
   this.activeTab.set(tab);
+}
+
+onCartUpdated(count: number){
+this.cartItemCount.set(count);
 }
 }

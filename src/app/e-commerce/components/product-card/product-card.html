@@ -10,15 +10,17 @@
         <ng-content select="[productActions]"></ng-content>
 
         <div #reviewsContainer class="reviews-container"></div>
+        <!-- // REVIEW COMPONENT -->
 
         <div class="product-actions">
-            <button class="add-to-cart">
+            <button class="add-to-cart"
+            (click)="onAddToCart()">
                 Add to Cart
             </button>
 
              <button class="toggle-reviews"
-             (click)="reviewComponentRef ? clearReviews() : loadReviews()">
-                {{reviewComponentRef ? 'Hide Reviews' : 'Show Reviews'}}
+             (click)="loadReviews()">
+               {{showReviews ? 'Hide Reviews' : 'Show Reviews'}}
             </button>
         </div>
     </div>

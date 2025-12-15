@@ -3,12 +3,17 @@
         <h1>Angular Ecommerce</h1>
         <nav class="tabs">
             <button [class.active]="activeTab() === 'products'" (click)="setActiveTab('products')">Products</button>
-            <button [class.active]="activeTab() === 'cart'" (click)="setActiveTab('cart')">Cart</button>
+            <button [class.active]="activeTab() === 'cart'" (click)="setActiveTab('cart')" class="cart-tab">
+                Cart
+            <span class="badge" *ngIf="cartItemCount() > 0">
+                {{cartItemCount()}}
+            </span>
+            </button>
         </nav>
     </header>
 
     <main class="main-content">
-        <app-product-list *ngIf="activeTab() === 'products'"/>
+        <app-product-list *ngIf="activeTab() === 'products'" (cartUpdated) = "onCartUpdated($event)"/>
         <!-- CART -->
     </main>
 </div>

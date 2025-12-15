@@ -11,7 +11,8 @@
 
     <div class="products-grid">
         <ng-container *ngFor="let product of filteredProducts()">
-         <app-product-card [product]="product">
+         <app-product-card [product]="product"
+         (addToCart)="addToCart(product)">
             <!-- PROJECTED CONTENT -->
              <ng-container productActions *ngIf="product.id === 1">
              <div class="special-offer">

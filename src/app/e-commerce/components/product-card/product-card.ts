@@ -1,4 +1,4 @@
-import { Component, ComponentRef, ContentChild, ElementRef, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import { Component, ComponentRef, ContentChild, ElementRef, EventEmitter, Input, Output, ViewChild, ViewContainerRef } from '@angular/core';
 import { Product } from '../../../interfaces/product';
 import { CommonModule } from '@angular/common';
 
@@ -10,17 +10,23 @@ import { CommonModule } from '@angular/common';
 })
 export class ProductCard {
 @Input() product!: Product;
+@Output() addToCart = new EventEmitter<number>();
 
 @ViewChild('reviewsContainer' , {read : ViewContainerRef}) reviewsContainer!:ViewContainerRef;
 @ContentChild('productActions') productActions: ElementRef | undefined;
 
 reviewComponentRef: ComponentRef<any> | null = null;
+showReviews = false;
 
 async loadReviews(){
 
   // Clear any existing dynamic component
 
-   this.clearReviews();
+  if(this.reviewComponentRef){
+    this.clearReviews();
+    this.showReviews = false;
+    return;
+  }
 
 
   if(!this.reviewsContainer){
@@ -29,11 +35,14 @@ async loadReviews(){
   }
 
   try{
+    this.showReviews=true;
     // Dynamically import the component
     const {ProductReview} = await import('../product-review/product-review');
    this.reviewComponentRef = this.reviewsContainer.createComponent(ProductReview);
+   this.showReviews = true;
   } catch (error){
     console.error('Error loading reviews', error);
+    this.showReviews= false;
   }
 }
 
@@ -42,6 +51,12 @@ clearReviews(){
     this.reviewComponentRef.destroy();
     this.reviewComponentRef = null;
   }
+}
+
+onAddToCart(){
+ if(this.product.stock > 0){
+  this.addToCart.emit(this.product.id);
+ }
 }
 
 ngOnDestroy(){
