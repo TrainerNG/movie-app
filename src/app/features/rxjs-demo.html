@@ -202,4 +202,120 @@
       </div>
     </div>
   </section>
+
+  <!-- CombineLatest and ForkJoin Demo -->
+  <section class="mb-8 p-6 bg-white rounded-lg shadow-md">
+    <h2 class="text-2xl font-semibold mb-4">4. combineLatest vs forkJoin</h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- combineLatest Example -->
+      <div class="p-4 border rounded">
+        <h3 class="text-xl font-medium mb-3">combineLatest</h3>
+        <p class="text-sm text-gray-600 mb-3">Emits when any source Observable emits</p>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Input 1 (Number)</label>
+            <input 
+              type="number" 
+              [value]="combineLatestInput1"
+              (input)="onCombineInput1Change($event)"
+              class="border p-2 rounded w-full"
+              placeholder="Enter a number"
+            >
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium mb-1">Input 2 (Number)</label>
+            <input 
+              type="number" 
+              [value]="combineLatestInput2"
+              (input)="onCombineInput2Change($event)"
+              class="border p-2 rounded w-full"
+              placeholder="Enter a number"
+            >
+          </div>
+          
+          <div class="p-3 bg-blue-50 rounded">
+            <p class="text-sm font-medium text-blue-800">Result:</p>
+            <pre class="mt-1 text-sm text-blue-700 whitespace-pre-wrap">{{ combineLatestResult }}</pre>
+          </div>
+          
+          <div class="p-3 bg-gray-50 rounded text-sm">
+            <p class="font-medium">Key Points:</p>
+            <ul class="list-disc pl-5 mt-1 space-y-1">
+              <li>Emits when any source Observable emits <strong>after all sources have emitted at least once</strong></li>
+              <li>Shows intermediate states (waiting for first/second input)</li>
+              <li>Great for forms with dependent fields</li>
+              <li>Try it: Type in one input and see the waiting message until you type in the second input</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      
+      <!-- forkJoin Example -->
+      <div class="p-4 border rounded">
+        <h3 class="text-xl font-medium mb-3">forkJoin</h3>
+        <p class="text-sm text-gray-600 mb-3">Waits for all Observables to complete</p>
+        
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">API Call 1 (ID)</label>
+            <input 
+              type="text" 
+              [(ngModel)]="forkJoinInput1"
+              class="border p-2 rounded w-full"
+              placeholder="Enter ID 1"
+            >
+          </div>
+          
+          <div>
+            <label class="block text-sm font-medium mb-1">API Call 2 (ID)</label>
+            <input 
+              type="text" 
+              [(ngModel)]="forkJoinInput2"
+              class="border p-2 rounded w-full"
+              placeholder="Enter ID 2"
+            >
+          </div>
+          
+          <button 
+            (click)="updateForkJoin()"
+            [disabled]="isForkJoinLoading"
+            [ngClass]="{
+              'bg-green-500 hover:bg-green-600': !isForkJoinLoading,
+              'bg-gray-400 cursor-not-allowed': isForkJoinLoading
+            }"
+            class="w-full text-white px-4 py-2 rounded transition-colors"
+          >
+            {{ isForkJoinLoading ? 'Loading...' : 'Simulate API Calls' }}
+          </button>
+          
+          <div class="p-3 bg-blue-50 rounded">
+            <p class="text-sm font-medium text-blue-800">Result:</p>
+            <pre class="mt-1 text-sm text-blue-700 whitespace-pre-wrap">{{ forkJoinResult }}</pre>
+          </div>
+          
+          <div class="p-3 bg-gray-50 rounded text-sm">
+            <p class="font-medium">Key Points:</p>
+            <ul class="list-disc pl-5 mt-1 space-y-1">
+              <li>Waits for all Observables to complete</li>
+              <li>Emits once with all values <strong>only after all complete</strong></li>
+              <li>Ideal for multiple parallel API calls</li>
+              <li>Fails if any source Observable errors</li>
+              <li>Try it: Change the IDs and click the button to see both results appear together</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="mt-6 p-4 bg-yellow-50 rounded">
+      <h3 class="font-medium text-yellow-800 mb-2">When to use which?</h3>
+      <ul class="list-disc pl-5 space-y-1 text-sm text-yellow-700">
+        <li><strong>combineLatest</strong>: When you need to combine multiple streams of data that emit over time (e.g., form inputs, real-time data)</li>
+        <li><strong>forkJoin</strong>: When you need to wait for multiple HTTP requests to complete and get all results at once</li>
+      </ul>
+    </div>
+  </section>
 </div>
