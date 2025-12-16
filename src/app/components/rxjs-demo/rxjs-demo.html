@@ -1,2 +1,41 @@
 <input type="text" (input)="onSearchChange($event,'switchMap')"
 placeholder="Search with switchMap">
+
+
+<input type="text" (input)="onSearchChange($event,'mergeMap')"
+placeholder="Search with mergeMap">
+
+
+<input type="text" (input)="onSearchChange($event,'concatMap')"
+placeholder="Search with concatMap">
+
+<!-- // COMBINE LATEST -->
+
+<div class="parent">
+    <div>
+        <label>Input 1 (Number)</label>
+        <input type="number" [value]="combineLatestInput1" (input)="onCombineInput1Change($event)">
+    </div>
+
+
+    <div>
+        <label>Input 2 (Number)</label>
+        <input type="number" [value]="combineLatestInput2" (input)="onCombineInput2Change($event)">
+    </div>
+
+    <div>
+        <p> Result: </p>
+        <b>{{combineLatestResult}}</b>
+    </div>
+</div>
+
+
+<!-- FORK JOIN -->
+ <h3>FORK JOIN</h3>
+
+ <div class="forkjoin">
+    <div>
+        <label for="">API CALL 1 (ID)</label>
+        <input type="text">
+    </div>
+ </div>
