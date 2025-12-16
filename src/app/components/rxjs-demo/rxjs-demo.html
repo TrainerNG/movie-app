@@ -36,6 +36,20 @@ placeholder="Search with concatMap">
  <div class="forkjoin">
     <div>
         <label for="">API CALL 1 (ID)</label>
-        <input type="text">
+        <input type="text" [(ngModel)]="forkJoinInput1" placeholder="Enter ID 1">
+    </div>
+
+      <div>
+        <label for="">API CALL 2 (ID)</label>
+        <input type="text" [(ngModel)]="forkJoinInput2" placeholder="Enter ID 2">
+    </div>
+
+    <button (click)="updateForkJoin()" [disabled]="isforkJoinLoading">
+        {{isforkJoinLoading ? 'Loading...' : 'Simulate API Calls'}}
+    </button>
+
+    <div>
+        <p>Result: </p>
+        <b>{{forkJoinResult}}</b>
     </div>
  </div>

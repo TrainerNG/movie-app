@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
-import { combineLatest, concatMap, debounceTime, delay, distinctUntilChanged, forkJoin, map, mergeMap, Observable, of, Subject, switchMap } from 'rxjs';
+import { ChangeDetectorRef, Component } from '@angular/core';
+import { combineLatest, concatMap, debounceTime, delay, distinctUntilChanged, forkJoin, map, mergeMap, Observable, of, Subject, Subscription, switchMap } from 'rxjs';
 import { Movie } from '../../services/movie';
 import { MovieSearchResponse } from '../../interfaces/movie-search-response';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-rxjs-demo',
-  imports: [],
+  imports: [FormsModule],
   templateUrl: './rxjs-demo.html',
   styleUrl: './rxjs-demo.css',
 })
@@ -17,6 +18,13 @@ export class RxjsDemo {
  private switchMapSubject = new Subject<string>();
  private mergeMapSubject = new Subject<string>();
  private concatMapSubject = new Subject<string>();
+
+
+ // Subscription
+
+ private switchMapSubscription: Subscription | null = null;
+ private mergeMapSubscription: Subscription | null = null;
+ private concatMapSubscription: Subscription | null = null;
 
  //COMBINE LATEST
 
@@ -30,9 +38,10 @@ export class RxjsDemo {
 
  forkJoinInput1 = '1';
  forkJoinInput2 = '2';
- forkJoinResult = 'Loading...'
+ forkJoinResult = 'Results are not loaded yet';
+ isforkJoinLoading = false;
 
- constructor(private movieService: Movie){}
+ constructor(private movieService: Movie, private cdr: ChangeDetectorRef){}
 
  ngOnInit(){
   this.setupSearch();
@@ -56,6 +65,7 @@ export class RxjsDemo {
  }
 
  updateForkJoin(): void{
+  this.isforkJoinLoading = true;
   this.forkJoinResult = 'Loading...';
 
   // SIMULATE API calls with delays.
@@ -65,7 +75,16 @@ export class RxjsDemo {
 
   forkJoin([apiCall1, apiCall2]).subscribe({
     next:([result1, result2])=>{
-      this.forkJoinResult = `ForkJoin Results:\n-${result1}\n- ${result2}\n\n (wait for all observables to complete)`
+      this.forkJoinResult = `ForkJoin Results:\n-${result1}\n- ${result2}\n\n (wait for all observables to complete)`;
+      this.isforkJoinLoading = false;
+      this.cdr.detectChanges();
+    },
+    error:(error)=>{
+      this.forkJoinResult = `Error: ${error.message}`;
+      this.isforkJoinLoading = false;
+    },
+    complete:()=>{
+      console.log('Observable completed');
     }
   })
  }
@@ -126,18 +145,18 @@ private updateCombineLatestStatus(){
 }
 
 private setupSearch(){
-  this.switchMapSubject.pipe(
+  this.switchMapSubscription = this.switchMapSubject.pipe(
     // debounceTime(300),
     distinctUntilChanged(),
     switchMap(query => this.searchMovies(query))
   ).subscribe();
 
-  this.mergeMapSubject.pipe(
+  this.mergeMapSubscription = this.mergeMapSubject.pipe(
     distinctUntilChanged(),
     mergeMap(query => this.searchMovies(query))
   ).subscribe();
 
-    this.concatMapSubject.pipe(
+    this.concatMapSubscription = this.concatMapSubject.pipe(
     distinctUntilChanged(),
     concatMap(query => this.searchMovies(query))
   ).subscribe();
@@ -154,5 +173,14 @@ private searchMovies(query: string): Observable<any[]>{
       return response.results.slice(0,5);
     })
   )
+}
+
+ngOnDestroy(): void{
+  this.switchMapSubscription?.unsubscribe();
+  this.mergeMapSubscription?.unsubscribe();
+  this.concatMapSubscription?.unsubscribe();
+
+  this.input1$.complete();
+  this.input2$.complete();
 }
 }
