@@ -1,60 +1,174 @@
 <div class="signals-demo">
-  <h1>Angular Signals Demo</h1>
+  <h1>Angular Signals Deep Dive</h1>
   
+  <!-- 1. Basic Signals -->
   <section class="demo-section">
     <h2>1. Basic Signals</h2>
     <div class="demo-card">
-      <div class="counter">
+      <div class="signal-demo">
+        <h3>Counter</h3>
         <p>Count: {{ count() }}</p>
-        <p>Double Count (computed): {{ doubleCount() }}</p>
-        <button (click)="increment()">Increment</button>
+        <p>Double Count: {{ doubleCount() }}</p>
+        <p>Status: {{ isActive() ? 'Active' : 'Inactive' }}</p>
+        <div class="button-group">
+          <button (click)="increment()">+1</button>
+          <button (click)="incrementBy(5)">+5</button>
+          <button (click)="toggleActive()">
+            {{ isActive() ? 'Deactivate' : 'Activate' }}
+          </button>
+        </div>
       </div>
       
-      <div class="name">
+      <div class="signal-demo">
+        <h3>Greeting</h3>
         <p>Name: {{ name() }}</p>
         <p>Greeting: {{ greeting() }}</p>
-        <button (click)="updateName()">Toggle Name</button>
+        <p>User Role: {{ user().role | titlecase }}</p>
+        <div class="button-group">
+          <button (click)="name.set('Angular Developer')">Set Name</button>
+          <button (click)="updateUser()">Toggle Role</button>
+        </div>
       </div>
     </div>
   </section>
 
+  <!-- 2. Working with Arrays -->
   <section class="demo-section">
     <h2>2. Working with Arrays</h2>
     <div class="demo-card">
-      <ul>
-        <li *ngFor="let item of items()">{{ item }}</li>
-      </ul>
-      <button (click)="addItem()">Add Item</button>
-    </div>
-  </section>
-
-  <section class="demo-section">
-    <h2>3. RxJS Interop (Observable to Signal)</h2>
-    <div class="demo-card">
-      <p>Timer (updates every second): {{ timer() }}</p>
-    </div>
-  </section>
-
-  <section class="demo-section">
-    <h2>4. Derived State</h2>
-    <div class="demo-card">
-      <p>{{ countInfo }}</p>
-    </div>
-  </section>
-
-  <section class="demo-section">
-    <h2>5. Signals vs Observables</h2>
-    <div class="comparison">
-      <div class="comparison-col">
-        <h3>Signals</h3>
+      <div class="todo-list">
+        <h3>Todo List ({{ completedItems() }}/{{ totalItems() }} completed)</h3>
+        <div class="progress-bar">
+          <div class="progress" [style.width.%]="progress()"></div>
+          <span>{{ progress() }}%</span>
+        </div>
         <ul>
-          <li *ngFor="let point of signalVsObservable.signals">{{ point }}</li>
+          <li *ngFor="let item of items()" 
+              [class.completed]="item.completed"
+              (click)="toggleItemCompletion(item.id)">
+            {{ item.name }}
+            <button class="remove-btn" (click)="removeItem(item.id); $event.stopPropagation()">×</button>
+          </li>
+        </ul>
+        <div class="add-item">
+          <button (click)="addItem()">+ Add New Task</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. Computed Values -->
+  <section class="demo-section">
+    <h2>3. Computed Values</h2>
+    <div class="demo-card">
+      <div class="computed-demo">
+        <h3>Derived State</h3>
+        <p>Total Items: {{ totalItems() }}</p>
+        <p>Completed Items: {{ completedItems() }}</p>
+        <p>Progress: {{ progress() }}%</p>
+        <p>Count Analysis: {{ countInfo }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. RxJS Interop -->
+  <section class="demo-section">
+    <h2>4. RxJS Interop</h2>
+    <div class="demo-card">
+      <div class="rxjs-demo">
+        <h3>Observable to Signal</h3>
+        <p>Timer (updates every second): {{ timer() }}</p>
+        <p>Document Title (updates with count): <em>Check your browser tab</em></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Batch Updates -->
+  <section class="demo-section">
+    <h2>5. Batch Updates</h2>
+    <div class="demo-card">
+      <div class="batch-update">
+        <button (click)="resetAll()">Reset All Values</button>
+        <p><small>This resets all signals to their initial values in a single batch update.</small></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Effects -->
+  <section class="demo-section">
+    <h2>6. Effects in Action</h2>
+    <div class="demo-card">
+      <div class="effects-demo">
+        <p>Check your browser's console to see effects in action:</p>
+        <ul>
+          <li>Count changes are logged automatically</li>
+          <li>Effect with cleanup runs every 5 seconds</li>
+          <li>Document title updates with count</li>
         </ul>
       </div>
-      <div class="comparison-col">
-        <h3>Observables</h3>
+    </div>
+  </section>
+
+  <!-- 7. Performance Tips -->
+  <section class="demo-section">
+    <h2>7. Performance Tips</h2>
+    <div class="demo-card">
+      <div class="performance-tips">
+        <h3>Optimizing Signal Usage</h3>
         <ul>
-          <li *ngFor="let point of signalVsObservable.observables">{{ point }}</li>
+          <li>Use <code>computed()</code> for derived state to avoid redundant calculations</li>
+          <li>Use <code>untracked()</code> for batch updates to prevent unnecessary re-renders</li>
+          <li>Keep effects minimal and focused on a single responsibility</li>
+          <li>Clean up effects using the onCleanup function</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. Common Pitfalls -->
+  <section class="demo-section">
+    <h2>8. Common Pitfalls</h2>
+    <div class="demo-card">
+      <div class="pitfalls">
+        <h3>Things to Watch Out For</h3>
+        <ul>
+          <li><strong>Mutating objects/arrays directly</strong>: Always create new references</li>
+          <li><strong>Forgetting to call signals as functions</strong>: Use <code>count()</code> not <code>count</code></li>
+          <li><strong>Memory leaks</strong>: Clean up effects in OnDestroy</li>
+          <li><strong>Overusing effects</strong>: Prefer computed signals when possible</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9. When to Use Signals -->
+  <section class="demo-section">
+    <h2>9. When to Use Signals</h2>
+    <div class="demo-card">
+      <div class="use-cases">
+        <h3>Ideal Use Cases</h3>
+        <ul>
+          <li>Local component state management</li>
+          <li>Reactive UI updates</li>
+          <li>Form handling</li>
+          <li>Derived/computed values</li>
+          <li>Simple state management (replacing BehaviorSubject)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. Next Steps -->
+  <section class="demo-section">
+    <h2>10. Next Steps</h2>
+    <div class="demo-card">
+      <div class="next-steps">
+        <h3>Continue Learning</h3>
+        <ul>
+          <li>Explore Angular's built-in control flow with signals</li>
+          <li>Learn about signal-based forms</li>
+          <li>Check out the official Angular Signals documentation</li>
+          <li>Experiment with signals in your own projects!</li>
         </ul>
       </div>
     </div>
