@@ -1,0 +1,74 @@
+<div class="signals-demo">
+  <h1>Angular Signals Demo</h1>
+  
+  <section class="demo-section">
+    <h2>1. Basic Signals</h2>
+    <div class="demo-card">
+      <div class="counter">
+        <p>Count: {{ count() }}</p>
+        <p>Double Count (computed): {{ doubleCount() }}</p>
+        <button (click)="increment()">Increment</button>
+      </div>
+      
+      <div class="name">
+        <p>Name: {{ name() }}</p>
+        <p>Greeting: {{ greeting() }}</p>
+        <button (click)="updateName()">Toggle Name</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section">
+    <h2>2. Working with Arrays</h2>
+    <div class="demo-card">
+      <ul>
+        <li *ngFor="let item of items()">{{ item }}</li>
+      </ul>
+      <button (click)="addItem()">Add Item</button>
+    </div>
+  </section>
+
+  <section class="demo-section">
+    <h2>3. RxJS Interop (Observable to Signal)</h2>
+    <div class="demo-card">
+      <p>Timer (updates every second): {{ timer() }}</p>
+    </div>
+  </section>
+
+  <section class="demo-section">
+    <h2>4. Derived State</h2>
+    <div class="demo-card">
+      <p>{{ countInfo }}</p>
+    </div>
+  </section>
+
+  <section class="demo-section">
+    <h2>5. Signals vs Observables</h2>
+    <div class="comparison">
+      <div class="comparison-col">
+        <h3>Signals</h3>
+        <ul>
+          <li *ngFor="let point of signalVsObservable.signals">{{ point }}</li>
+        </ul>
+      </div>
+      <div class="comparison-col">
+        <h3>Observables</h3>
+        <ul>
+          <li *ngFor="let point of signalVsObservable.observables">{{ point }}</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="when-to-use">
+    <h2>When to Use Signals</h2>
+    <ul>
+      <li>✅ Component state management</li>
+      <li>✅ Local UI state</li>
+      <li>✅ Computed values from other signals</li>
+      <li>✅ Granular change detection</li>
+      <li>❌ Complex async operations (use Observables)</li>
+      <li>❌ Event streams (use Observables)</li>
+    </ul>
+  </section>
+</div>
