@@ -1,0 +1,36 @@
+<div class="signals-demo">
+    <h1>Angular Signals Deep</h1>
+
+    <section class="demo-section">
+        <div class="demo-card">
+            <div class="signal-demo">
+                <h3>Counter</h3>
+                <p>Count: {{count()}}</p>
+                <p>Double Count : {{doubleCount()}}</p>
+
+                <div class="button-group">
+                    <button (click)="increment()">+1</button>
+                    <button (click)="incrementBy(5)">+5</button>
+                </div>
+            </div>
+
+            <div class="signal-demo">
+                <h3>Greeting</h3>
+                <p>Name : {{name()}}</p>
+                <p>User Role : {{user().role | titlecase}}</p>
+                <div class="button-group">
+                    <button (click)="name.set('Angular Developer')">Set Name</button>
+                    <button (click)="updateUser()">Toggle Role</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="demo-section">
+        <div class="demo-card">
+            <div class="todo-list">
+                <h3>Todo List ( {{completedItems()}} / {{totalItems()}} completed)</h3>
+            </div>
+        </div>
+    </section>
+</div>

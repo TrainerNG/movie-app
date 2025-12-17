@@ -5,6 +5,7 @@ import { AdvancedReactiveForm } from './components/advanced-reactive-form/advanc
 import { NonnullableReactiveForm } from './components/nonnullable-reactive-form/nonnullable-reactive-form';
 import { ECommerce } from './e-commerce/e-commerce';
 import { RxjsDemo } from './components/rxjs-demo/rxjs-demo';
+import { SignalsDemo } from './components/signals-demo/signals-demo';
 
 export const routes: Routes = [
     {
@@ -25,5 +26,8 @@ export const routes: Routes = [
     },
     {
         path:'rxjs-demo', component: RxjsDemo
+    },
+    {
+        path:'signal-demo', component: SignalsDemo
     }
 ];
