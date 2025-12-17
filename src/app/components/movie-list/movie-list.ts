@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Movie } from '../../services/movie';
 import { MovieSearchResponse } from '../../interfaces/movie-search-response';
 import { FormsModule } from '@angular/forms';
@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { EncryptionService } from '../../services/encryption-service';
 import { ToastService } from '../../services/toast-service';
 import { MovieCard } from "../movie-card/movie-card";
+import { LoadingService } from '../../services/loading/loading.service';
 
 @Component({
   selector: 'app-movie-list',
@@ -16,65 +17,56 @@ import { MovieCard } from "../movie-card/movie-card";
   styleUrl: './movie-list.css',
 })
 export class MovieList {
-private movieService = inject(Movie);
-private cdr = inject(ChangeDetectorRef);
-private encryptionService = inject(EncryptionService);
-private toastrService = inject(ToastService);
-private router = inject(Router);
+  private movieService = inject(Movie);
+  loadingService = inject(LoadingService);
+  private encryptionService = inject(EncryptionService);
+  private toastrService = inject(ToastService);
+  private router = inject(Router);
 
-query = '';
-currentPage = 1;
-movies:MovieInterface[]=[];
-loading = false;
-totalResults = 0;
-error = false;
+  query = '';
+  currentPage = 1;
+  movies:MovieInterface[]=[];
+  totalResults = 0;
+  error = false;
 
 ngOnInit(){
   this.loadPopularMovies();
 }
 
-search(){
-  if(this.query){
+search() {
+  if (this.query) {
     this.currentPage = 1;
-   this.loadMovies();
-  }else{
+    this.loadMovies();
+  } else {
     this.loadPopularMovies();
   }
 }
 
-loadMovies(){
-  this.loading = true;
-  this.movieService.searchMovies(this.query, this.currentPage).subscribe({
-    next:(response: MovieSearchResponse)=>{
-      this.movies = response.results || [];
-      this.totalResults = response.total_results;
-      this.toastrService.successMessage('Loaded Successfully');
-      this.loading = false;
-      this.cdr.markForCheck();
-    }
-  })
-}
+  loadMovies() {
+    this.movieService.searchMovies(this.query, this.currentPage).subscribe({
+      next: (response: MovieSearchResponse) => {
+        this.movies = response.results || [];
+        this.totalResults = response.total_results;
+      },
+      error: (err) => {
+        console.error('loadMovies error: ', err);
+        this.error = true;
+      }
+    });
+  }
 
-loadPopularMovies(){
-  this.loading = true;
-  this.movieService.getPopularMovies(this.currentPage).subscribe({
-    next:(response: MovieSearchResponse) => {
-      this.movies = response.results || [];
-      this.totalResults = response.total_results;
-      this.loading = false;
-      this.toastrService.success('Loaded Successfully','Success',{timeOut:2000});
-      this.cdr.markForCheck() // FORCEFULLY UPDATING UI.
-    },
-    error:(err)=>{
-      console.error('loadPopularMovies error: ', err);
-      this.loading = false;
-      this.error = true;
-      this.toastrService.error('Server Error','Error',{timeOut:4000});
-      this.cdr.markForCheck();
-
-    }
-  })
-}
+  loadPopularMovies() {
+    this.movieService.getPopularMovies(this.currentPage).subscribe({
+      next: (response: MovieSearchResponse) => {
+        this.movies = response.results || [];
+        this.totalResults = response.total_results;
+      },
+      error: (err) => {
+        console.error('loadPopularMovies error: ', err);
+        this.error = true;
+      }
+    });
+  }
 
 get totalPages(): number{
   return Math.ceil(this.totalResults / 20) ; // TMDB has 20 pages
