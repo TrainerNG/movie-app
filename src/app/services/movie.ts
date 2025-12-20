@@ -14,6 +14,8 @@ export class Movie {
 
   constructor(private http: HttpClient){}
 
+  // catchError() // ANGULAR
+
 
   searchMovies(query: string,page: number = 1): Observable<MovieSearchResponse>{
     const params = new HttpParams()

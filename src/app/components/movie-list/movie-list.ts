@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { EncryptionService } from '../../services/encryption-service';
 import { ToastService } from '../../services/toast-service';
 import { MovieCard } from "../movie-card/movie-card";
+import { Loading } from '../../services/loading';
 
 @Component({
   selector: 'app-movie-list',
@@ -20,6 +21,7 @@ private movieService = inject(Movie);
 private cdr = inject(ChangeDetectorRef);
 private encryptionService = inject(EncryptionService);
 private toastrService = inject(ToastService);
+loadingService = inject(Loading);
 private router = inject(Router);
 
 query = '';
@@ -43,33 +45,25 @@ search(){
 }
 
 loadMovies(){
-  this.loading = true;
   this.movieService.searchMovies(this.query, this.currentPage).subscribe({
     next:(response: MovieSearchResponse)=>{
       this.movies = response.results || [];
       this.totalResults = response.total_results;
-      this.toastrService.successMessage('Loaded Successfully');
-      this.loading = false;
       this.cdr.markForCheck();
     }
   })
 }
 
 loadPopularMovies(){
-  this.loading = true;
   this.movieService.getPopularMovies(this.currentPage).subscribe({
     next:(response: MovieSearchResponse) => {
       this.movies = response.results || [];
       this.totalResults = response.total_results;
-      this.loading = false;
-      this.toastrService.success('Loaded Successfully','Success',{timeOut:2000});
       this.cdr.markForCheck() // FORCEFULLY UPDATING UI.
     },
     error:(err)=>{
       console.error('loadPopularMovies error: ', err);
-      this.loading = false;
       this.error = true;
-      this.toastrService.error('Server Error','Error',{timeOut:4000});
       this.cdr.markForCheck();
 
     }

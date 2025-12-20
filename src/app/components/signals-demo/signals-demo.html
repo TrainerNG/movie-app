@@ -30,6 +30,23 @@
         <div class="demo-card">
             <div class="todo-list">
                 <h3>Todo List ( {{completedItems()}} / {{totalItems()}} completed)</h3>
+                <div class="progress-bar">
+                    <div class="progress" [style.width.%]="progress()">
+                        <span>{{progress()}} %</span>
+                    </div>
+                </div>
+
+                <ul>
+                    <li *ngFor="let item of items()" [class.completed]="item.completed"
+                    (click)="toggleItemCompletion(item.id)">
+                        {{item.name}}
+                        <button class="remove-btn" (click)="removeItem(item.id)">X</button>
+                    </li>
+                </ul>
+
+                <div class="add-item">
+                    <button (click)="addItem()">+Add nEW tASK</button>
+                </div>
             </div>
         </div>
     </section>

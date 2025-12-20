@@ -3,7 +3,7 @@ import { Component, computed, signal } from '@angular/core';
 
 
 type Item = { id: number; name: string; completed: boolean };
-type User = {id:number; name: string; role: 'admin' | 'user'}
+type User = { id: number; name: string; role: 'admin' | 'user' }
 
 @Component({
   selector: 'app-signals-demo',
@@ -30,31 +30,57 @@ export class SignalsDemo {
   user = signal<User>({
     id: 1,
     name: 'John',
-    role:'user'
+    role: 'user'
   });
-  totalItems = computed(()=> this.items().length);
-  completedItems = computed(()=> this.items().filter(item => item.completed).length);
+  totalItems = computed(() => this.items().length);
+  completedItems = computed(() => this.items().filter(item => item.completed).length);
+
+  progress = computed(() => {
+    return this.totalItems() > 0 ? Math.round((this.completedItems() / this.totalItems()) * 100) : 0
+  })
 
 
   // Computed Signals (derived state);
 
-  doubleCount = computed(()=> this.count() * 2);
+  doubleCount = computed(() => this.count() * 2);
 
 
-  increment(){
-    this.count.set(this.count()+1);
+  increment() {
+    this.count.set(this.count() + 1);
   }
 
-  incrementBy(amount: number){
+  incrementBy(amount: number) {
     this.count.update(current => current + amount);
   }
 
   // Working with Objects
 
-  updateUser(){
-    this.user.update(current=>({
+  updateUser() {
+    this.user.update(current => ({
       ...current,
       role: current.role === 'admin' ? 'user' : 'admin'
     }))
+  }
+
+  toggleItemCompletion(id: number) {
+    this.items.update(items => items.map(item => item.id === id ?
+      {
+        ...item, completed: !item.completed
+      } : item
+    )
+  )
+  }
+
+  addItem(){
+    const newId = this.items().length > 0 ?
+    Math.max(...this.items().map(i => i.id)) + 1 : 1;
+
+    this.items.update(items=>[
+      ...items,{id:newId,name:`Task ${newId}`, completed: false}
+    ]);
+  }
+
+  removeItem(id: number){
+    this.items.update(items=> items.filter(item => item.id!==id));
   }
 }

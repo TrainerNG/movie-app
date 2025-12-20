@@ -6,7 +6,7 @@
 
         <button (click)="search()" class="search-btn">Search</button>
     </div>
-    <div *ngIf="loading" class="loading">loading...</div>
+    <div *ngIf="loadingService.isLoading$ | async" class="loading">loading...</div>
 
     <!-- MOVIE GRID -->
      <app-movie-card 
@@ -15,8 +15,8 @@
      *ngIf="!loading && movies.length > 0">
      </app-movie-card>
 
-    <div *ngIf="!error && !loading && movies.length === 0" class="no-results">No movies found</div>
-    <div *ngIf="error && !loading && movies.length === 0" class="no-results">API ERROR</div>
+    <div *ngIf="!error && !(loadingService.isLoading$ | async) && movies.length === 0" class="no-results">No movies found</div>
+    <div *ngIf="error && !(loadingService.isLoading$ | async) && movies.length === 0" class="no-results">API ERROR</div>
 
     <div class="pagination" *ngIf="totalPages > 1">
         <button (click)="onPageChange(currentPage - 1)" class="page-btn" [disabled]="currentPage === 1">Previous</button>
