@@ -1,18 +1,37 @@
 <div class="movie-list-container">
     <h1>Movie Listing</h1>
     <div class="search-container">
-        <input type="text" [(ngModel)]="query" (keyup.enter)="search()" placeholder="Search for movies..."
+        <input type="text" [ngModel]="query()" (ngModelChange)="query.set($event)" 
+        (keyup.enter)="search()" placeholder="Search for movies..."
         class="search-input">
 
         <button (click)="search()" class="search-btn">Search</button>
     </div>
-    <div *ngIf="loadingService.isLoading$ | async" class="loading">loading...</div>
+    <ng-container *ngIf="isLoading$ | async;else movieListLoaded">
+        <div class="loading">loading...</div>
+    </ng-container>
+
+    <ng-template #movieListLoaded>
+        <app-movie-card 
+     [movies]="movies()"
+     (movieSelected)="viewDetails($event)"
+     *ngIf="movies().length > 0">
+     </app-movie-card>
+
+     <div class="no-results" *ngIf="movies().length === 0"> No Movies Found</div>
+
+     <div class="pagination" *ngIf="totalPages() > 1">
+        <button (click)="onPageChange(currentPage() - 1)" class="page-btn" [disabled]="currentPage() === 1">Previous</button>
+        <span> Page {{currentPage()}} of {{totalPages()}}</span>
+        <button (click)="onPageChange(currentPage() + 1)" class="page-btn" [disabled]="currentPage === totalPages">Next</button>
+    </div>
+    </ng-template>
 
     <!-- MOVIE GRID -->
-     <app-movie-card 
-     [movies]="movies"
+     <!-- <app-movie-card 
+     [movies]="movies()"
      (movieSelected)="viewDetails($event)"
-     *ngIf="!loading && movies.length > 0">
+     *ngIf="movies().length > 0">
      </app-movie-card>
 
     <div *ngIf="!error && !(loadingService.isLoading$ | async) && movies.length === 0" class="no-results">No movies found</div>
@@ -22,5 +41,5 @@
         <button (click)="onPageChange(currentPage - 1)" class="page-btn" [disabled]="currentPage === 1">Previous</button>
         <span> Page {{currentPage}} of {{totalPages}}</span>
         <button (click)="onPageChange(currentPage + 1)" class="page-btn" [disabled]="currentPage === totalPages">Next</button>
-    </div>
+    </div> -->
 </div>
