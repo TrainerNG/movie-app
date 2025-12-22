@@ -1,5 +1,5 @@
  <div class="movie-grid" *ngIf="movies && movies.length > 0">
-        <div class="movie-card" *ngFor="let movie of movies" (click)="onMovieClick(movie.id)">
+        <div class="movie-card" *ngFor="let movie of movies; trackBy: trackByMovie" (click)="onMovieClick(movie.id)">
             <img [src]="movie.poster_path ? 'https://image.tmdb.org/t/p/w500' + movie.poster_path :
             'https://via.placeholder.com/300x400?text=No+Image'" [alt]="movie.title" class="movie-poster"/>
             <h3>{{movie.title}}</h3>

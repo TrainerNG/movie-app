@@ -16,4 +16,6 @@ export class MovieCard {
 onMovieClick(movieId: number){
   this.movieSelected.emit(movieId);
 }
+
+trackByMovie = (_: number, movie: MovieInterface) => movie.id;
 }
