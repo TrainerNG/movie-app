@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
 import { MovieInterface } from '../../interfaces/movie';
 
 @Component({
@@ -7,6 +7,7 @@ import { MovieInterface } from '../../interfaces/movie';
   imports: [CommonModule],
   templateUrl: './movie-card.html',
   styleUrl: './movie-card.css',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class MovieCard {
 @Input() movies: MovieInterface[] = [];

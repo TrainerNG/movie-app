@@ -1,30 +1,38 @@
-<div class="movie-details-container" *ngIf="movieDetails">
-    <button (click)="goBack()" class="back-btn">← Back to List</button>
+<ng-container *ngIf="isLoading$ | async; else detailsContent">
+    <div class="loading">Loading movie details...</div>
+</ng-container>
 
-    <div class="movie-header">
-    <img [src]="movieDetails.poster_path ? 'https://image.tmdb.org/t/p/w500' + movieDetails.poster_path 
-    : 'https://via.placeholder.com/300x400?text=No+Image'" [alt]="movieDetails.title" class="movie-poster-large"/>
+<ng-template #detailsContent>
+    <div class="movie-details-container" *ngIf="movieDetails() as details; else noDetails">
+            <button (click)="goBack()" class="back-btn">← Back to List</button>
 
-    <div class="movie-info">
-        <h1>{{movieDetails.title}}</h1>
-        <p><strong>Release Date : </strong>{{(movieDetails.release_date | date) ?? 'N/A'}}</p>
-        <p><strong>Runtime : </strong>{{movieDetails.runtime || 'N/A'}} min</p>
-        <p><strong>Vote Average : </strong>{{movieDetails.vote_average}}</p>
-        <p><strong>Vote Count : </strong>{{movieDetails.vote_count}}</p>
-        <p><strong>Popularity : </strong>{{movieDetails.popularity}}</p>
+            <div class="movie-header">
+            <img [src]="details.poster_path ? 'https://image.tmdb.org/t/p/w500' + details.poster_path 
+            : 'https://via.placeholder.com/300x400?text=No+Image'" [alt]="details.title" class="movie-poster-large"/>
 
-        <!-- NULL COELSION OPERATOR -->
+            <div class="movie-info">
+                <h1>{{details.title}}</h1>
+                <p><strong>Release Date : </strong>{{(details.release_date | date) ?? 'N/A'}}</p>
+                <p><strong>Runtime : </strong>{{details.runtime || 'N/A'}} min</p>
+                <p><strong>Vote Average : </strong>{{details.vote_average}}</p>
+                <p><strong>Vote Count : </strong>{{details.vote_count}}</p>
+                <p><strong>Popularity : </strong>{{details.popularity}}</p>
 
-        <p><strong>Revenue : </strong>{{movieDetails.revenue}}</p>
-    </div>
-    </div>
+                <!-- NULL COELSION OPERATOR -->
 
-    <!-- OVERVIEW BLOCK -->
+                <p><strong>Revenue : </strong>{{details.revenue}}</p>
+            </div>
+            </div>
 
-    <div class="movie-plot">
-        <h2>Overview</h2>
-        <p>{{movieDetails.overview}}</p>
-    </div>
-</div>
+            <!-- OVERVIEW BLOCK -->
 
-<div class="loading" *ngIf="loading">Loading movie details...</div>
+            <div class="movie-plot">
+                <h2>Overview</h2>
+                <p>{{details.overview}}</p>
+            </div>
+        </div>
+
+        <ng-template #noDetails>
+            <div class="no-results">Movie details are not available.</div>
+        </ng-template>
+</ng-template>
