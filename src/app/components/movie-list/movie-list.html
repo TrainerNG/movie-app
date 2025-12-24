@@ -26,20 +26,4 @@
         <button (click)="onPageChange(currentPage() + 1)" class="page-btn" [disabled]="currentPage === totalPages">Next</button>
     </div>
     </ng-template>
-
-    <!-- MOVIE GRID -->
-     <!-- <app-movie-card 
-     [movies]="movies()"
-     (movieSelected)="viewDetails($event)"
-     *ngIf="movies().length > 0">
-     </app-movie-card>
-
-    <div *ngIf="!error && !(loadingService.isLoading$ | async) && movies.length === 0" class="no-results">No movies found</div>
-    <div *ngIf="error && !(loadingService.isLoading$ | async) && movies.length === 0" class="no-results">API ERROR</div>
-
-    <div class="pagination" *ngIf="totalPages > 1">
-        <button (click)="onPageChange(currentPage - 1)" class="page-btn" [disabled]="currentPage === 1">Previous</button>
-        <span> Page {{currentPage}} of {{totalPages}}</span>
-        <button (click)="onPageChange(currentPage + 1)" class="page-btn" [disabled]="currentPage === totalPages">Next</button>
-    </div> -->
 </div>

@@ -1,4 +1,9 @@
-<div class="movie-details-container" *ngIf="movieDetails">
+<ng-container *ngIf="isLoading$ | async;else detailsContent">
+    <div class="loading">Loading movie details...</div>
+</ng-container>
+
+<ng-template #detailsContent>
+<div class="movie-details-container" *ngIf="movieDetails() as movieDetails;else noDetails">
     <button (click)="goBack()" class="back-btn">← Back to List</button>
 
     <div class="movie-header">
@@ -26,5 +31,11 @@
         <p>{{movieDetails.overview}}</p>
     </div>
 </div>
+<ng-template #noDetails>
+    <div class="no-results">
+        Movie details are not available
+    </div>
+</ng-template>
+</ng-template>
 
-<div class="loading" *ngIf="loading">Loading movie details...</div>
+<!-- <div class="loading" *ngIf="loading">Loading movie details...</div> -->

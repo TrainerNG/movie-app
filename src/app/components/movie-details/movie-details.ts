@@ -1,25 +1,28 @@
-import { ChangeDetectorRef, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Movie } from '../../services/movie';
 import { MovieDetailsInterface } from '../../interfaces/movie-details';
 import { CommonModule } from '@angular/common';
 import { EncryptionService } from '../../services/encryption-service';
+import { Loading } from '../../services/loading';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-movie-details',
   imports: [CommonModule],
   templateUrl: './movie-details.html',
   styleUrl: './movie-details.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class MovieDetails {
 private route = inject(ActivatedRoute);
 private router = inject(Router);
 private movieService = inject(Movie);
 private encryptionService = inject(EncryptionService);
-private cdr = inject(ChangeDetectorRef);
+loadingService = inject(Loading);
 
-movieDetails: MovieDetailsInterface | null = null;
-loading = true;
+readonly movieDetails = signal<MovieDetailsInterface | null>(null);
+readonly isLoading$ = this.loadingService.isLoading$;
 
 ngOnInit(){
   const idParam = this.route.snapshot.paramMap.get('encryptedId');
@@ -32,15 +35,13 @@ ngOnInit(){
   }
 }
 
-loadMovieDetails(id: number){
-this.loading=true;
-this.movieService.getMovieDetails(id).subscribe({
-  next:(movieDetails: MovieDetailsInterface) => {
-   this.movieDetails = movieDetails;
-   this.loading = false;
-   this.cdr.markForCheck();
-  }
-})
+async loadMovieDetails(id: number){
+try{
+const details = await firstValueFrom(this.movieService.getMovieDetails(id));
+this.movieDetails.set(details);
+}catch(err){
+  this.movieDetails.set(null);
+}
 }
 
 goBack(){
