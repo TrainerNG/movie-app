@@ -5,6 +5,7 @@ export interface MovieDetailsInterface extends MovieInterface {
   genres: {id:number, name:string}[];
   homepage: string;
   imdb_id: string;
+  tagline?: string;
   status: string;
   revenue: number;
   runtime: number;

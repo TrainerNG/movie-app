@@ -5,6 +5,7 @@ export interface MovieInterface {
     release_date: string;
     overview: string;
     vote_average: number;
+    vote_count: number;
     adult:boolean;
     backdrop_path: string;
 }

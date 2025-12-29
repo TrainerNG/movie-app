@@ -29,16 +29,16 @@ export class MovieList {
 
   readonly isLoading$ = this.loadingService.isLoading$;
 
-  ngOnInit() {
-    this.loadPopularMovies();
+  async ngOnInit() {
+    await this.loadPopularMovies();
   }
 
-  search() {
+  async search() {
     if (this.query().trim()) {
       this.currentPage.set(1);
-      this.loadMovies();
+      await this.loadMovies();
     } else {
-      this.loadPopularMovies();
+      await this.loadPopularMovies();
     }
   }
 
@@ -66,16 +66,17 @@ export class MovieList {
     return results >= 0 ? Math.ceil(results / 20) : 0
   })
 
-  onPageChange(page: number) {
-    if (page < 1 || (this.totalPages() && page > this.totalPages())) {
+  async onPageChange(page: number) {
+    const totalPages = this.totalPages();
+    if (page < 1 || (totalPages === 0 && page !== 1) || (totalPages > 0 && page > totalPages)) {
       return;
     }
     this.currentPage.set(page);
     if (this.query().trim()) {
-      this.loadMovies();
+      await this.loadMovies();
     }
     else {
-      this.loadPopularMovies();
+      await this.loadPopularMovies();
     }
   }
 
