@@ -21,6 +21,7 @@ private movieService = inject(Movie);
 private encryptionService = inject(EncryptionService);
 loadingService = inject(Loading);
 
+
 readonly movieDetails = signal<MovieDetailsInterface | null>(null);
 readonly isLoading$ = this.loadingService.isLoading$;
 
